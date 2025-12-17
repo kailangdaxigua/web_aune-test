@@ -1,0 +1,358 @@
+/**
+ * Aune Audio CMS - Main Styles
+ */
+
+ /* Google Fonts */
+ @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&family=Noto+Serif+SC:wght@400;500;600;700&family=Playfair+Display:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+/* Tailwind CSS imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/* Base styles */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    @apply font-body text-aune-200 bg-aune-950;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-gold-500/30 text-white;
+  }
+
+  /* Scrollbar styles */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-aune-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-aune-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-aune-500;
+  }
+
+  /* Focus styles */
+  :focus-visible {
+    @apply outline-none ring-2 ring-gold-500/50 ring-offset-2 ring-offset-aune-950;
+  }
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display font-bold;
+  }
+}
+
+/* Component styles */
+@layer components {
+  /* Button base */
+  .btn {
+    @apply inline-flex items-center justify-center px-4 py-2 font-medium rounded-lg transition-all duration-200;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-aune-950;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-gold-600 to-gold-500 text-white;
+    @apply hover:from-gold-500 hover:to-gold-400;
+    @apply focus:ring-gold-500/50;
+  }
+
+  .btn-secondary {
+    @apply border border-aune-600 text-aune-300;
+    @apply hover:bg-aune-800/50 hover:text-white;
+    @apply focus:ring-aune-500/50;
+  }
+
+  .btn-ghost {
+    @apply text-aune-400 hover:text-white hover:bg-aune-800/50;
+  }
+
+  /* Input base */
+  .input {
+    @apply w-full px-4 py-3 bg-aune-800/50 border border-aune-600/50 rounded-lg;
+    @apply text-white placeholder-aune-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-gold-500/50 focus:border-gold-500/50;
+    @apply transition-all;
+  }
+
+  /* Card */
+  .card {
+    @apply bg-aune-800/50 rounded-xl border border-aune-700/50;
+  }
+
+  /* Badge */
+  .badge {
+    @apply inline-flex items-center px-2 py-1 text-xs font-medium rounded-full;
+  }
+
+  .badge-gold {
+    @apply bg-gold-500/20 text-gold-400 border border-gold-500/30;
+  }
+
+  /* Gradient text */
+  .text-gradient {
+    @apply bg-gradient-to-r from-gold-400 to-gold-600 bg-clip-text text-transparent;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-aune-900/50 backdrop-blur-xl border border-aune-700/50;
+  }
+}
+
+/* Utility styles */
+@layer utilities {
+  /* Line clamp */
+  .line-clamp-1 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+  }
+
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
+  .line-clamp-3 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  /* Hide scrollbar */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Aspect ratios */
+  .aspect-4\/3 {
+    aspect-ratio: 4 / 3;
+  }
+
+  .aspect-16\/9 {
+    aspect-ratio: 16 / 9;
+  }
+
+  /* Animation delays */
+  .animation-delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .animation-delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .animation-delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .animation-delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .animation-delay-500 {
+    animation-delay: 500ms;
+  }
+}
+
+/* Prose styles for rich text content */
+.prose {
+  color: #b8b8c1;
+  max-width: none;
+}
+
+.prose-invert h1,
+.prose-invert h2,
+.prose-invert h3,
+.prose-invert h4,
+.prose-invert h5,
+.prose-invert h6 {
+  color: #ffffff;
+  font-family: 'Playfair Display', 'Noto Serif SC', serif;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose-invert p {
+  color: #b8b8c1;
+  margin-bottom: 1em;
+}
+
+.prose-invert a {
+  color: #d4a056;
+  text-decoration: underline;
+}
+
+.prose-invert a:hover {
+  color: #e9d3a8;
+}
+
+.prose-invert strong {
+  color: #ffffff;
+}
+
+.prose-invert blockquote {
+  border-left: 4px solid #d4a056;
+  padding-left: 1em;
+  color: #91919f;
+  font-style: italic;
+}
+
+.prose-invert ul,
+.prose-invert ol {
+  padding-left: 1.5em;
+}
+
+.prose-invert li {
+  margin: 0.5em 0;
+}
+
+.prose-invert li::marker {
+  color: #d4a056;
+}
+
+.prose-invert code {
+  background: #41414a;
+  color: #d4a056;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9em;
+}
+
+.prose-invert pre {
+  background: #1a1a1f;
+  padding: 1em;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.prose-invert pre code {
+  background: transparent;
+  padding: 0;
+  color: #b8b8c1;
+}
+
+.prose-invert hr {
+  border-color: #4c4c57;
+  margin: 2em 0;
+}
+
+.prose-invert img {
+  border-radius: 12px;
+  margin: 1.5em 0;
+}
+
+.prose-invert table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.prose-invert th {
+  background: #393940;
+  color: #ffffff;
+  padding: 0.75em 1em;
+  text-align: left;
+  border: 1px solid #4c4c57;
+}
+
+.prose-invert td {
+  padding: 0.75em 1em;
+  border: 1px solid #4c4c57;
+}
+
+.prose-invert tr:nth-child(even) td {
+  background: rgba(65, 65, 74, 0.2);
+}
+
+/* Animation keyframes */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(212, 160, 86, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px rgba(212, 160, 86, 0);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Page transitions */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* Modal transitions */
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .modal-content,
+.modal-leave-active .modal-content {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-enter-from .modal-content,
+.modal-leave-to .modal-content {
+  transform: scale(0.95);
+  opacity: 0;
+}
+
