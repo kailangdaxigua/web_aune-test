@@ -87,7 +87,7 @@ export default function ManageLayout({ children }: { children: ReactNode }) {
             <Link href="/Manage" className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/aune.png"
+                src="/aune.black.png"
                 alt="AUNE Logo"
                 className="h-7 w-auto object-contain"
               />

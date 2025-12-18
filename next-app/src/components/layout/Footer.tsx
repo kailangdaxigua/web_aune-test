@@ -90,13 +90,13 @@ export default async function Footer() {
   const officialPlatforms = groups["official_platforms"] || [];
 
   return (
-    <footer className="border-t border-gray-100 bg-white">
+    <footer className="border-t border-zinc-800 bg-[#050509]">
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
           {/* Purchase Channels */}
           <div>
-            <h3 className="mb-4 font-semibold text-gray-900">购买渠道</h3>
+            <h3 className="mb-4 font-semibold text-white">购买渠道</h3>
             <ul className="space-y-3">
               {purchaseChannels.map((link) => (
                 <li key={link.id}>
@@ -105,14 +105,14 @@ export default async function Footer() {
                       href={resolveUrl(link)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-gray-500 transition-colors hover:text-amber-600"
+                      className="text-sm text-zinc-300 transition-colors hover:text-white"
                     >
                       {link.label}
                     </a>
                   ) : (
                     <Link
                       href={resolveUrl(link)}
-                      className="text-sm text-gray-500 transition-colors hover:text-amber-600"
+                      className="text-sm text-zinc-300 transition-colors hover:text-white"
                     >
                       {link.label}
                     </Link>
@@ -124,7 +124,7 @@ export default async function Footer() {
 
           {/* About Aune */}
           <div>
-            <h3 className="mb-4 font-semibold text-gray-900">关于aune</h3>
+            <h3 className="mb-4 font-semibold text-white">关于aune</h3>
             <ul className="space-y-3">
               {aboutAune.map((link) => (
                 <li key={link.id}>
@@ -133,14 +133,14 @@ export default async function Footer() {
                       href={resolveUrl(link)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-gray-500 transition-colors hover:text-amber-600"
+                      className="text-sm text-zinc-300 transition-colors hover:text-amber-400"
                     >
                       {link.label}
                     </a>
                   ) : (
                     <Link
                       href={resolveUrl(link)}
-                      className="text-sm text-gray-500 transition-colors hover:text-amber-600"
+                      className="text-sm text-zinc-300 transition-colors hover:text-amber-400"
                     >
                       {link.label}
                     </Link>
@@ -152,7 +152,7 @@ export default async function Footer() {
 
           {/* Service Support */}
           <div>
-            <h3 className="mb-4 font-semibold text-gray-900">服务支持</h3>
+            <h3 className="mb-4 font-semibold text-white">服务支持</h3>
             <ul className="space-y-3">
               {serviceSupport.map((link) => (
                 <li key={link.id}>
@@ -161,14 +161,14 @@ export default async function Footer() {
                       href={resolveUrl(link)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-gray-500 transition-colors hover:text-amber-600"
+                      className="text-sm text-zinc-300 transition-colors hover:text-white"
                     >
                       {link.label}
                     </a>
                   ) : (
                     <Link
                       href={resolveUrl(link)}
-                      className="text-sm text-gray-500 transition-colors hover:text-amber-600"
+                      className="text-sm text-zinc-300 transition-colors hover:text-white"
                     >
                       {link.label}
                     </Link>
@@ -180,7 +180,7 @@ export default async function Footer() {
 
           {/* Official Platforms */}
           <div>
-            <h3 className="mb-4 font-semibold text-gray-900">官方平台</h3>
+            <h3 className="mb-4 font-semibold text-white">官方平台</h3>
             <ul className="space-y-3">
               {officialPlatforms.map((link) => (
                 <li key={link.id}>
@@ -188,7 +188,7 @@ export default async function Footer() {
                     href={resolveUrl(link)}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-amber-600"
+                    className="flex items-center gap-2 text-sm text-zinc-300 transition-colors hover:text-white"
                   >
                     {link.icon_class && (
                       <span className="text-amber-500">
@@ -204,16 +204,16 @@ export default async function Footer() {
         </div>
 
         {/* Hotline & Copyright */}
-        <div className="mt-12 border-t border-gray-100 pt-8">
+        <div className="mt-12 border-t border-zinc-800 pt-8">
           <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
             {/* Logo & Copyright */}
             <div className="flex flex-col items-center gap-4 md:flex-row">
-              <span className="text-xl font-display font-bold text-gray-900">
+              <span className="text-xl font-display font-bold text-white">
                 AUNE<span className="text-amber-500">.</span>
               </span>
-              <span className="text-sm text-gray-400">{copyrightText}</span>
+              <span className="text-sm text-zinc-400">{copyrightText}</span>
               {icpNumber && (
-                <span className="text-sm text-gray-400">{icpNumber}</span>
+                <span className="text-sm text-zinc-400">{icpNumber}</span>
               )}
             </div>
 
@@ -221,7 +221,7 @@ export default async function Footer() {
             {hotline && (
               <div className="flex items-center gap-2">
                 <svg
-                  className="h-5 w-5 text-amber-500"
+                  className="h-5 w-5 text-white"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -233,10 +233,10 @@ export default async function Footer() {
                     d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
                   />
                 </svg>
-                <span className="text-sm text-gray-600">官方服务热线：</span>
+                <span className="text-sm text-zinc-300">官方服务热线：</span>
                 <a
                   href={`tel:${hotline}`}
-                  className="text-sm font-semibold text-amber-600 transition-colors hover:text-amber-500"
+                  className="text-sm font-semibold text-white transition-colors hover:text-zinc-200"
                 >
                   {hotline}
                 </a>

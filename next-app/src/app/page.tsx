@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import HeroCarouselClient from "@/components/home/HeroCarouselClient";
 
 type Product = {
   id: number;
@@ -129,46 +130,9 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#050509]">
       {/* Hero Carousel */}
-      <section className="relative h-[80vh] min-h-[480px] overflow-hidden border-b border-zinc-800/80 bg-black">
+      <section className="relative h-[calc(100vh)] min-h-[640px] overflow-hidden border-b border-zinc-800/80 bg-black">
         {carouselItems.length > 0 ? (
-          <div className="relative h-full w-full">
-            {/* 先渲染第一张，后续如需再做自动轮播可以改成客户端组件 */}
-            {(() => {
-              const item = carouselItems[0];
-              return (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={item.image_url || ""}
-                    alt={item.title || "AUNE"}
-                    className="h-full w-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#050509] via-black/40 to-transparent" />
-                  {(item.title || item.subtitle) && (
-                    <div className="absolute bottom-24 left-0 right-0 px-4 sm:px-6 lg:px-8">
-                      <div className="mx-auto max-w-7xl">
-                        <h1 className="mb-4 text-3xl font-bold text-white sm:text-5xl md:text-6xl">
-                          {item.title}
-                        </h1>
-                        {item.subtitle && (
-                          <p className="max-w-xl text-sm text-zinc-300 sm:text-lg">
-                            {item.subtitle}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                  {item.link_url && (
-                    <Link
-                      href={item.link_url}
-                      target={item.link_target || "_self"}
-                      className="absolute inset-0"
-                    />
-                  )}
-                </>
-              );
-            })()}
-          </div>
+          <HeroCarouselClient items={carouselItems} />
         ) : (
           <div className="flex h-full items-center justify-center bg-gradient-to-br from-zinc-900 via-black to-zinc-950">
             <div className="px-4 text-center">
@@ -228,35 +192,27 @@ export default async function Home() {
         </section>
       )}
 
-      <main className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <main className=" sm:px-6 lg:px-8">
         {/* Hot Products Section */}
-        <section className="py-16">
-          <div className="text-center mb-12">
-            <h2 className="mb-4 text-3xl font-bold text-white sm:text-4xl">
-              热门产品
-            </h2>
-            <p className="mx-auto max-w-2xl text-sm text-zinc-400 sm:text-base">
-              精选人气产品，感受卓越音质
-            </p>
-          </div>
+        <section className=" md:py-3">
 
           {hotProducts.length > 0 ? (
             <>
-              <div className="grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4">
-                {hotProducts.map((product) => (
+              <div className="grid h-full grid-cols-1 gap-6 md:grid-cols-2 md:grid-rows-2">
+                {hotProducts.slice(0, 4).map((product) => (
                   <Link
                     key={product.id}
                     href={`/product/${product.slug}`}
                     className="group cursor-pointer"
                   >
-                    <div className="relative mb-4 aspect-square overflow-hidden rounded-2xl bg-zinc-900">
+                    <div className="relative h-full min-h-[260px] overflow-hidden bg-zinc-900">
                       {product.cover_image ? (
                         // 这里先用普通 img，后续可以改成 next/image
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                           src={product.cover_image}
                           alt={product.name}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       ) : (
                         <div className="flex h-full w-full items-center justify-center">
@@ -266,67 +222,22 @@ export default async function Home() {
                         </div>
                       )}
 
-                      {/* Hover overlay */}
-                      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <span className="mb-4 ml-4 flex items-center gap-2 text-xs font-medium text-amber-400">
-                          查看详情
-                          <svg
-                            className="h-4 w-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M9 5l7 7-7 7"
-                            />
-                          </svg>
-                        </span>
+                      {/* Text overlay */}
+                      <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                        <div className="text-center">
+                          {product.category && (
+                            <p className="mb-2 text-xs font-medium tracking-[0.3em] text-zinc-300 sm:text-sm">
+                              {product.category.name}
+                            </p>
+                          )}
+                          <h3 className="text-xl font-semibold text-white transition-colors sm:text-2xl">
+                            {product.name}
+                          </h3>
+                        </div>
                       </div>
-
-                      {/* HOT badge */}
-                      <div className="absolute left-3 top-3 rounded bg-red-500 px-2 py-1 text-xs font-medium text-white">
-                        HOT
-                      </div>
-                    </div>
-
-                    <div className="text-center">
-                      <h3 className="text-sm font-medium text-white transition-colors group-hover:text-amber-400 sm:text-base">
-                        {product.name}
-                      </h3>
-                      {product.category && (
-                        <p className="mt-1 text-xs text-zinc-500 sm:text-sm">
-                          {product.category.name}
-                        </p>
-                      )}
                     </div>
                   </Link>
                 ))}
-              </div>
-
-              {/* View all link */}
-              <div className="mt-10 text-center">
-                <Link
-                  href="/products/all"
-                  className="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-8 py-3 text-sm font-medium text-amber-500 transition-colors hover:bg-amber-500 hover:text-white"
-                >
-                  查看全部产品
-                  <svg
-                    className="h-4 w-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </Link>
               </div>
             </>
           ) : (
