@@ -13,6 +13,17 @@ type Product = {
   category?: any;
 };
 
+type HomeFeaturedItem = {
+  id: number;
+  title?: string | null;
+  subtitle?: string | null;
+  image_url?: string | null;
+  mobile_image_url?: string | null;
+  target_url?: string | null;
+  is_external?: boolean | null;
+  link_target?: string | null;
+};
+
 type CarouselItem = {
   id: number;
   title?: string | null;
@@ -35,24 +46,30 @@ type HomeVideo = {
   is_active?: boolean | null;
 };
 
-async function getHotProducts(limit = 8): Promise<Product[]> {
+async function getFeaturedItems(limit = 8): Promise<HomeFeaturedItem[]> {
   const { data, error } = await supabase
-    .from("products")
+    .from("home_featured")
     .select(
-      `id, name, model, slug, cover_image,
-       category:categories(id, name, slug)`
+      "id, title, subtitle, image_url, mobile_image_url, target_url, is_external, link_target"
     )
-    .eq("is_hot", true)
-    .eq("is_active", true)
     .order("sort_order")
     .limit(limit);
 
   if (error) {
-    console.error("Failed to fetch hot products:", error.message);
+    console.error("Failed to fetch home featured items:", error.message);
     return [];
   }
 
-  return data ?? [];
+  return (data || []).map((row: any) => ({
+    id: row.id,
+    title: row.title,
+    subtitle: row.subtitle,
+    image_url: row.image_url,
+    mobile_image_url: row.mobile_image_url,
+    target_url: row.target_url,
+    is_external: row.is_external,
+    link_target: row.link_target,
+  }));
 }
 
 async function getCarouselItems(): Promise<CarouselItem[]> {
@@ -86,7 +103,9 @@ async function getCarouselItems(): Promise<CarouselItem[]> {
 
   return ((data || []) as CarouselRow[])
     .filter((row) => {
-      if (!row.is_active) return false;
+      // 仅当 is_active 显式为 false 时才过滤掉；
+      // 老数据中 is_active 可能为 NULL，这里视为启用以兼容旧内容。
+      if (row.is_active === false) return false;
       const startOk = !row.start_at || new Date(row.start_at) <= now;
       const endOk = !row.end_at || new Date(row.end_at) >= now;
       return startOk && endOk;
@@ -121,10 +140,10 @@ async function getPrimaryVideo(): Promise<HomeVideo | null> {
 }
 
 export default async function Home() {
-  const [carouselItems, primaryVideo, hotProducts] = await Promise.all([
+  const [carouselItems, primaryVideo, featuredItems] = await Promise.all([
     getCarouselItems(),
     getPrimaryVideo(),
-    getHotProducts(8),
+    getFeaturedItems(8),
   ]);
 
   return (
@@ -192,26 +211,25 @@ export default async function Home() {
         </section>
       )}
 
-      <main className=" sm:px-6 lg:px-8">
-        {/* Hot Products Section */}
-        <section className=" md:py-3">
+      <main className="bg-white">
+        {/* Home Featured Section */}
+        <section className="bg-white py-4 md:py-2">
 
-          {hotProducts.length > 0 ? (
+          {featuredItems.length > 0 ? (
             <>
-              <div className="grid h-full grid-cols-1 gap-6 md:grid-cols-2 md:grid-rows-2">
-                {hotProducts.slice(0, 4).map((product) => (
-                  <Link
-                    key={product.id}
-                    href={`/product/${product.slug}`}
-                    className="group cursor-pointer"
-                  >
-                    <div className="relative h-full min-h-[260px] overflow-hidden bg-zinc-900">
-                      {product.cover_image ? (
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:grid-rows-2 md:gap-2">
+                {featuredItems.slice(0, 4).map((item) => {
+                  const href = item.target_url || "#";
+                  const target =
+                    item.link_target || (item.is_external ? "_blank" : "_self");
+                  const content = (
+                    <div className="relative h-[420px] md:h-[696px] overflow-hidden bg-white">
+                      {item.image_url ? (
                         // 这里先用普通 img，后续可以改成 next/image
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
-                          src={product.cover_image}
-                          alt={product.name}
+                          src={item.image_url}
+                          alt={item.title || "featured"}
                           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                       ) : (
@@ -225,19 +243,36 @@ export default async function Home() {
                       {/* Text overlay */}
                       <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
                         <div className="text-center">
-                          {product.category && (
-                            <p className="mb-2 text-xs font-medium tracking-[0.3em] text-zinc-300 sm:text-sm">
-                              {product.category.name}
+                          {item.subtitle && (
+                            <p className="mb-2 text-xs font-medium tracking-[0.3em] text-zinc-500 sm:text-sm">
+                              {item.subtitle}
                             </p>
                           )}
-                          <h3 className="text-xl font-semibold text-white transition-colors sm:text-2xl">
-                            {product.name}
-                          </h3>
+                          {item.title && (
+                            <h3 className="text-xl font-semibold text-zinc-900 sm:text-2xl">
+                              {item.title}
+                            </h3>
+                          )}
                         </div>
                       </div>
                     </div>
-                  </Link>
-                ))}
+                  );
+
+                  return item.target_url ? (
+                    <Link
+                      key={item.id}
+                      href={href}
+                      target={target}
+                      className="group cursor-pointer"
+                    >
+                      {content}
+                    </Link>
+                  ) : (
+                    <div key={item.id} className="group cursor-default">
+                      {content}
+                    </div>
+                  );
+                })}
               </div>
             </>
           ) : (

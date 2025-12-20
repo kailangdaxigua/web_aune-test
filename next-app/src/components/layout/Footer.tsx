@@ -1,4 +1,7 @@
+"use client";
+
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
@@ -63,26 +66,57 @@ function groupFooterLinks(links: FooterLink[]) {
   return groups;
 }
 
-export default async function Footer() {
-  const [{ data: footerLinksData }, { data: configData }] = await Promise.all([
-    (supabase
-      .from("footer_links")
-      .select("id, label, url, link_group, is_external, icon_class, page:pages(slug)")
-      .eq("is_active", true)
-      .order("sort_order") as any),
-    supabase
-      .from("site_config")
-      .select("hotline, copyright_text, icp_number")
-      .single<SiteConfig>(),
-  ]);
+export default function Footer() {
+  const [links, setLinks] = useState<FooterLink[]>([]);
+  const [config, setConfig] = useState<SiteConfig | null>(null);
 
-  const groups = groupFooterLinks((footerLinksData || []) as FooterLink[]);
+  useEffect(() => {
+    let cancelled = false;
 
-  const hotline = configData?.hotline || "";
+    async function load() {
+      const [footerRes, configRes] = await Promise.all([
+        supabase
+          .from("footer_links")
+          .select(
+            "id, label, url, link_group, is_external, icon_class, page:pages(slug)"
+          )
+          .eq("is_active", true)
+          .order("sort_order"),
+        supabase
+          .from("site_config")
+          .select("hotline, copyright_text, icp_number")
+          .single<SiteConfig>(),
+      ]);
+
+      if (!cancelled) {
+        if (footerRes.error) {
+          console.error("Failed to fetch footer_links:", footerRes.error.message);
+        } else {
+          setLinks((footerRes.data || []) as FooterLink[]);
+        }
+
+        if (configRes.error) {
+          console.error("Failed to fetch site_config:", configRes.error.message);
+        } else {
+          setConfig(configRes.data || null);
+        }
+      }
+    }
+
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const groups = groupFooterLinks(links);
+
+  const hotline = config?.hotline || "";
   const copyrightText =
-    configData?.copyright_text ||
+    config?.copyright_text ||
     `© ${new Date().getFullYear()} Aune Audio. All rights reserved.`;
-  const icpNumber = configData?.icp_number || "";
+  const icpNumber = config?.icp_number || "";
 
   const purchaseChannels = groups["purchase_channels"] || [];
   const aboutAune = groups["about_aune"] || [];
@@ -133,14 +167,14 @@ export default async function Footer() {
                       href={resolveUrl(link)}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm text-zinc-300 transition-colors hover:text-amber-400"
+                      className="text-sm text-zinc-300 transition-colors hover:text-white"
                     >
                       {link.label}
                     </a>
                   ) : (
                     <Link
                       href={resolveUrl(link)}
-                      className="text-sm text-zinc-300 transition-colors hover:text-amber-400"
+                      className="text-sm text-zinc-300 transition-colors hover:text-white"
                     >
                       {link.label}
                     </Link>

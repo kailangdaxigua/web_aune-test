@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import HeaderClient from "./HeaderClient";
 
@@ -15,53 +18,71 @@ export type NavProduct = {
   nav_thumbnail?: string | null;
 };
 
-async function getCategoriesWithProducts() {
-  const { data: categoriesData, error } = await supabase
-    .from("categories")
-    .select("id, name, slug")
-    .eq("is_active", true)
-    .order("sort_order");
+export default function Header() {
+  const [categoryGroups, setCategoryGroups] = useState<
+    { category: Category; products: NavProduct[] }[]
+  >([]);
 
-  if (error) {
-    console.error("Failed to fetch categories:", error.message);
-    return [] as { category: Category; products: NavProduct[] }[];
-  }
+  useEffect(() => {
+    let cancelled = false;
 
-  const categories = categoriesData || [];
+    async function load() {
+      const { data: categoriesData, error } = await supabase
+        .from("categories")
+        .select("id, name, slug")
+        .eq("is_active", true)
+        .order("sort_order");
 
-  if (!categories.length) return [];
+      if (error) {
+        console.error("Failed to fetch categories:", error.message);
+        return;
+      }
 
-  const { data: productsData } = await supabase
-    .from("products")
-    .select("id, name, slug, cover_image, nav_thumbnail, category_id")
-    .eq("is_active", true)
-    .order("sort_order");
+      const categories = categoriesData || [];
+      if (!categories.length) {
+        if (!cancelled) setCategoryGroups([]);
+        return;
+      }
 
-  const byCategory: Record<number, NavProduct[]> = {};
-  (productsData || []).forEach((p: any) => {
-    const cid = p.category_id as number | null;
-    if (!cid) return;
-    if (!byCategory[cid]) byCategory[cid] = [];
-    if (byCategory[cid].length >= 6) return;
-    byCategory[cid].push({
-      id: p.id,
-      name: p.name,
-      slug: p.slug,
-      cover_image: p.cover_image,
-      nav_thumbnail: p.nav_thumbnail,
-    });
-  });
+      const { data: productsData } = await supabase
+        .from("products")
+        .select(
+          "id, name, slug, cover_image, nav_thumbnail, category_id"
+        )
+        .eq("is_active", true)
+        .order("sort_order");
 
-  return categories.map((c) => ({
-    category: c,
-    products: byCategory[c.id] || [],
-  }));
-}
+      const byCategory: Record<number, NavProduct[]> = {};
+      (productsData || []).forEach((p: any) => {
+        const cid = p.category_id as number | null;
+        if (!cid) return;
+        if (!byCategory[cid]) byCategory[cid] = [];
+        if (byCategory[cid].length >= 6) return;
+        byCategory[cid].push({
+          id: p.id,
+          name: p.name,
+          slug: p.slug,
+          cover_image: p.cover_image,
+          nav_thumbnail: p.nav_thumbnail,
+        });
+      });
 
-export default async function Header() {
-  const categoryGroups = await getCategoriesWithProducts();
+      if (!cancelled) {
+        setCategoryGroups(
+          categories.map((c) => ({
+            category: c,
+            products: byCategory[c.id] || [],
+          }))
+        );
+      }
+    }
 
-  return (
-    <HeaderClient categoryGroups={categoryGroups} />
-  );
+    load();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return <HeaderClient categoryGroups={categoryGroups} />;
 }

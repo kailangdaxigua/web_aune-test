@@ -58,6 +58,12 @@ const NAV_ITEMS: { name: string; path: string; iconPath: string }[] = [
       "M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z",
   },
   {
+    name: "首页精选推荐",
+    path: "/Manage/featured",
+    iconPath:
+      "M12 2l2.39 4.848 5.343.777-3.866 3.769.913 5.326L12 14.77l-4.78 2.95.913-5.326L4.267 7.625l5.343-.777L12 2z",
+  },
+  {
     name: "页脚链接",
     path: "/Manage/footer-links",
     iconPath:
@@ -87,7 +93,7 @@ export default function ManageLayout({ children }: { children: ReactNode }) {
             <Link href="/Manage" className="flex items-center gap-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/aune.black.png"
+                src="/aune.white.png"
                 alt="AUNE Logo"
                 className="h-7 w-auto object-contain"
               />
