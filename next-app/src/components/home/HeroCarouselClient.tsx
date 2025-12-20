@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export type HeroCarouselItem = {
   id: number;
@@ -19,6 +19,16 @@ interface HeroCarouselClientProps {
 
 export default function HeroCarouselClient({ items }: HeroCarouselClientProps) {
   const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (!items.length || items.length === 1) return;
+
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % items.length);
+    }, 6000);
+
+    return () => clearInterval(timer);
+  }, [items.length]);
 
   if (!items.length) return null;
 
