@@ -306,48 +306,6 @@ export default function ManageSiteConfigPage() {
               </div>
             </div>
           </div>
-
-          <div className="rounded-xl border border-zinc-800 bg-[#11111a] p-6">
-            <h3 className="mb-4 text-lg font-semibold text-white">高级配置（JSON）</h3>
-
-            <div className="space-y-4">
-              <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-300">
-                  nav_structure
-                </label>
-                <textarea
-                  value={navStructureText}
-                  onChange={(e) => setNavStructureText(e.target.value)}
-                  rows={8}
-                  className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-4 py-3 font-mono text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-300">
-                  carousel_images
-                </label>
-                <textarea
-                  value={carouselImagesText}
-                  onChange={(e) => setCarouselImagesText(e.target.value)}
-                  rows={6}
-                  className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-4 py-3 font-mono text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium text-zinc-300">
-                  footer_structure
-                </label>
-                <textarea
-                  value={footerStructureText}
-                  onChange={(e) => setFooterStructureText(e.target.value)}
-                  rows={10}
-                  className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-4 py-3 font-mono text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
-                />
-              </div>
-            </div>
-          </div>
         </div>
       )}
     </div>
