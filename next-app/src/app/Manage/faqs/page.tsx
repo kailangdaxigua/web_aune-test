@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const presetCategories = ["使用指南", "技术支持", "售后服务", "故障排查", "购买咨询", "其他"] as const;
 
@@ -34,6 +35,8 @@ export default function ManageFaqsPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [filterCategory, setFilterCategory] = useState("all");
+  const [deleteTarget, setDeleteTarget] = useState<Faq | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
     question: "",
@@ -157,17 +160,25 @@ export default function ManageFaqsPage() {
     }
   }
 
-  async function deleteFaq(faq: Faq) {
-    if (!window.confirm(`确定要删除这条问答吗？\n"${faq.question}"`)) return;
+  function deleteFaq(faq: Faq) {
+    setDeleteTarget(faq);
+  }
 
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
     try {
-      const { error } = await supabase.from("faqs").delete().eq("id", faq.id);
+      const { error } = await supabase.from("faqs").delete().eq("id", deleteTarget.id);
       if (error) throw error;
 
       await loadFaqs();
       setSuccessMessage("删除成功");
     } catch (err: any) {
       setErrorMessage("删除失败: " + (err?.message || "未知错误"));
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   }
 
@@ -534,6 +545,27 @@ export default function ManageFaqsPage() {
           </div>
         </div>
       )}
+            <ConfirmDialog
+        open={!!deleteTarget}
+        title="删除问答"
+        description={
+          deleteTarget && (
+            <>
+              <p className="mb-2">确定要删除这条问答吗？</p>
+              <p className="text-xs text-zinc-500 line-clamp-2">
+                {deleteTarget.question}
+              </p>
+            </>
+          )
+        }
+        confirmLabel={deleting ? "正在删除..." : "确认删除"}
+        cancelLabel="取消"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+      />
     </div>
   );
 }

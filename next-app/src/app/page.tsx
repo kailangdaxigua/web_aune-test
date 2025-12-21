@@ -46,14 +46,13 @@ type HomeVideo = {
   is_active?: boolean | null;
 };
 
-async function getFeaturedItems(limit = 8): Promise<HomeFeaturedItem[]> {
+async function getFeaturedItems(): Promise<HomeFeaturedItem[]> {
   const { data, error } = await supabase
     .from("home_featured")
     .select(
       "id, title, subtitle, image_url, mobile_image_url, target_url, is_external, link_target"
     )
-    .order("sort_order")
-    .limit(limit);
+    .order("sort_order");
 
   if (error) {
     console.error("Failed to fetch home featured items:", error.message);
@@ -143,7 +142,7 @@ export default async function Home() {
   const [carouselItems, primaryVideo, featuredItems] = await Promise.all([
     getCarouselItems(),
     getPrimaryVideo(),
-    getFeaturedItems(8),
+    getFeaturedItems(),
   ]);
 
   return (
@@ -217,8 +216,8 @@ export default async function Home() {
 
           {featuredItems.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:grid-rows-2 md:gap-2">
-                {featuredItems.slice(0, 4).map((item) => {
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-2">
+                {featuredItems.map((item) => {
                   const href = item.target_url || "#";
                   const target =
                     item.link_target || (item.is_external ? "_blank" : "_self");

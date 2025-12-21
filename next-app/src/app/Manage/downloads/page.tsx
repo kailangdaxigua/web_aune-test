@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const downloadCategories = [
   { value: "desktop", label: "桌面系列" },
@@ -126,6 +127,8 @@ export default function ManageDownloadsPage() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<Download | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
@@ -365,29 +368,31 @@ export default function ManageDownloadsPage() {
     }
   }
 
-  async function deleteDownload(download: Download) {
-    if (
-      !window.confirm(
-        `确定要删除 "${download.title}" 吗？\n将同时删除存储中的文件。`
-      )
-    ) {
-      return;
-    }
+  function deleteDownload(download: Download) {
+    setDeleteTarget(download);
+  }
 
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
     try {
       const { error } = await supabase
         .from("downloads")
         .delete()
-        .eq("id", download.id);
+        .eq("id", deleteTarget.id);
       if (error) throw error;
 
-      if (download.file_url) {
-        await deleteStorageFile(download.file_url);
+      if (deleteTarget.file_url) {
+        await deleteStorageFile(deleteTarget.file_url);
       }
 
-      setDownloads((prev) => prev.filter((d) => d.id !== download.id));
+      setDownloads((prev) => prev.filter((d) => d.id !== deleteTarget.id));
     } catch (err: any) {
       setErrorMessage("删除失败: " + (err?.message || "未知错误"));
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   }
 
@@ -952,6 +957,30 @@ export default function ManageDownloadsPage() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="删除下载资源"
+        description={
+          deleteTarget && (
+            <>
+              <p className="mb-2">
+                确定要删除
+                <span className="mx-1 font-medium text-white">{deleteTarget.title}</span>
+                吗？
+              </p>
+              <p className="text-xs text-zinc-500">此操作不可撤销，将同时删除存储中的文件。</p>
+            </>
+          )
+        }
+        confirmLabel={deleting ? "正在删除..." : "确认删除"}
+        cancelLabel="取消"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+      />
     </div>
   );
 }

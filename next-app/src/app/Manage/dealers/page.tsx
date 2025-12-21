@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const dealerTypes = [
   { value: "offline", label: "线下体验店" },
@@ -120,6 +121,8 @@ export default function ManageDealersPage() {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
   const [filterType, setFilterType] = useState<string>("all");
+  const [deleteTarget, setDeleteTarget] = useState<Dealer | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
     dealer_type: "offline",
@@ -325,16 +328,21 @@ export default function ManageDealersPage() {
     }
   }
 
-  async function deleteDealer(dealer: Dealer) {
-    if (!window.confirm(`确定要删除 "${dealer.name}" 吗？`)) return;
+  function deleteDealer(dealer: Dealer) {
+    setDeleteTarget(dealer);
+  }
 
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
     try {
-      const urls = [dealer.logo_url, dealer.cover_image].filter(Boolean) as string[];
+      const urls = [deleteTarget.logo_url, deleteTarget.cover_image].filter(Boolean) as string[];
 
       const { error } = await supabase
         .from("dealers")
         .delete()
-        .eq("id", dealer.id);
+        .eq("id", deleteTarget.id);
       if (error) throw error;
 
       try {
@@ -347,6 +355,9 @@ export default function ManageDealersPage() {
       await loadDealers();
     } catch (err: any) {
       setErrorMessage("删除失败: " + (err?.message || "未知错误"));
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   }
 
@@ -788,6 +799,32 @@ export default function ManageDealersPage() {
           </div>
         </div>
       )}
+
+            <ConfirmDialog
+        open={!!deleteTarget}
+        title="删除经销商"
+        description={
+          deleteTarget && (
+            <>
+              <p className="mb-2">
+                确定要删除经销商
+                <span className="mx-1 font-medium text-white">{deleteTarget.name}</span>
+                吗？
+              </p>
+              <p className="text-xs text-zinc-500">
+                此操作不可撤销，将同时删除关联的 LOGO 和封面图片文件。
+              </p>
+            </>
+          )
+        }
+        confirmLabel={deleting ? "正在删除..." : "确认删除"}
+        cancelLabel="取消"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+      />
     </div>
   );
 }

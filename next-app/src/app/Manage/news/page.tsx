@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const categoryOptions = [
   { value: "news", label: "新闻动态" },
@@ -83,6 +84,8 @@ export default function ManageNewsPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [deleteTarget, setDeleteTarget] = useState<NewsItem | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [filterCategory, setFilterCategory] = useState<string>("all");
@@ -290,24 +293,32 @@ export default function ManageNewsPage() {
     }
   }
 
-  async function deleteNewsItem(article: NewsItem) {
-    if (!window.confirm(`确定要删除文章 "${article.title}" 吗？`)) return;
+  function deleteNewsItem(article: NewsItem) {
+    setDeleteTarget(article);
+  }
 
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
     try {
       const { error } = await supabase
         .from("news")
         .delete()
-        .eq("id", article.id);
+        .eq("id", deleteTarget.id);
       if (error) throw error;
 
-      if (article.cover_image) {
-        await deleteStorageFile(article.cover_image);
+      if (deleteTarget.cover_image) {
+        await deleteStorageFile(deleteTarget.cover_image);
       }
 
-      setNews((prev) => prev.filter((n) => n.id !== article.id));
+      setNews((prev) => prev.filter((n) => n.id !== deleteTarget.id));
     } catch (err: any) {
       console.error("Failed to delete news:", err);
       setErrorMessage("删除失败: " + (err?.message || "未知错误"));
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   }
 
@@ -903,6 +914,31 @@ export default function ManageNewsPage() {
           </div>
         </div>
       )}
+            <ConfirmDialog
+        open={!!deleteTarget}
+        title="删除文章"
+        description={
+          deleteTarget && (
+            <>
+              <p className="mb-2">
+                确定要删除文章
+                <span className="mx-1 font-medium text-white">{deleteTarget.title}</span>
+                吗？
+              </p>
+              <p className="text-xs text-zinc-500">
+                此操作不可撤销，将同时删除封面图片（如有）。
+              </p>
+            </>
+          )
+        }
+        confirmLabel={deleting ? "正在删除..." : "确认删除"}
+        cancelLabel="取消"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+      />
     </div>
   );
 }

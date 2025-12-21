@@ -102,23 +102,14 @@ export function SupportClient({
   }
 
   return (
-    <div className="support-page min-h-screen bg-[#050509] pt-20 text-white">
+    <div className="support-page min-h-screen bg-white text-zinc-900">
       {/* Hero */}
-      <section className="bg-gradient-to-b from-[#0b0b11] to-[#050509] py-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
-              服务支持
-            </h1>
-            <p className="mx-auto max-w-2xl text-base text-zinc-400 sm:text-lg">
-              专业团队为您提供全方位的技术支持与售后服务
-            </p>
-          </div>
-        </div>
+      <section className="py-70 bg-cover bg-center" style={{ backgroundImage: "url('/support.jpg')" }}>
+    
       </section>
 
       {/* Tabs */}
-      <section className="sticky top-20 z-30 border-y border-zinc-800/60 bg-[#11111a]/80 py-4 backdrop-blur-md">
+      <section className="sticky top-20 z-30 border-y border-zinc-200 bg-white py-4 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-4">
             {TABS.map((tab) => (
@@ -128,8 +119,8 @@ export function SupportClient({
                 onClick={() => setActiveTab(tab.value)}
                 className={`flex items-center gap-2 rounded-xl border px-6 py-3 text-sm font-medium transition-colors sm:text-base ${
                   activeTab === tab.value
-                    ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-                    : "border-transparent text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900/60 hover:text-white"
+                    ? "border-zinc-900 bg-zinc-100 text-zinc-900"
+                    : "border-transparent text-zinc-600 hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-900"
                 }`}
               >
                 {tab.label}
@@ -140,7 +131,7 @@ export function SupportClient({
       </section>
 
       {/* Content */}
-      <section className="py-12">
+      <section className="py-12 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {activeTab === "self-service" ? (
             <>
@@ -152,15 +143,13 @@ export function SupportClient({
 
                   const content = (
                     <div
-                      className={`group flex items-start gap-4 rounded-2xl border p-6 text-left transition-all ${
-                        color.border
-                      } ${color.hover}`}
+                      className={`group flex h-28 items-start gap-4 rounded-2xl border border-zinc-200 bg-white p-6 text-left shadow-sm transition-all hover:shadow-md`}
                     >
                       <div
-                        className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl transition-transform group-hover:scale-110 ${color.bg}`}
+                        className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-200 text-zinc-900 transition-transform group-hover:scale-110`}
                       >
                         <svg
-                          className={`h-7 w-7 ${color.text}`}
+                          className="h-7 w-7"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -175,15 +164,15 @@ export function SupportClient({
                         </svg>
                       </div>
                       <div className="flex-1">
-                        <h3 className="mb-1 text-lg font-semibold text-white transition-colors group-hover:text-amber-400">
+                        <h3 className="mb-1 text-lg font-medium text-zinc-900 transition-colors group-hover:text-zinc-950">
                           {entry.title}
                         </h3>
-                        <p className="text-sm text-zinc-400">
+                        <p className="text-sm text-zinc-500">
                           {entry.description}
                         </p>
                       </div>
                       <svg
-                        className="mt-1 h-5 w-5 flex-shrink-0 text-zinc-500 transition-all group-hover:translate-x-1 group-hover:text-amber-400"
+                        className="mt-1 h-5 w-5 flex-shrink-0 text-zinc-400 transition-all group-hover:translate-x-1 group-hover:text-zinc-900"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -220,15 +209,15 @@ export function SupportClient({
               </div>
 
               {/* Hotline */}
-              <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-amber-500/30 bg-gradient-to-r from-amber-600/20 to-amber-500/10 p-8 text-center">
-                <p className="mb-2 text-sm text-zinc-300">服务热线</p>
+              <div className="mx-auto mt-12 max-w-2xl rounded-2xl border border-zinc-200 bg-zinc-50 p-8 text-center">
+                <p className="mb-2 text-sm text-zinc-600">服务热线</p>
                 <a
                   href={`tel:${config.hotline}`}
-                  className="text-3xl font-bold text-amber-400 transition-colors hover:text-amber-300 md:text-4xl"
+                  className="text-3xl font-bold text-zinc-900 transition-colors hover:text-zinc-700 md:text-4xl"
                 >
                   {formatHotlineDisplay(config.hotline)}
                 </a>
-                <p className="mt-2 text-xs text-zinc-400 md:text-sm">
+                <p className="mt-2 text-xs text-zinc-500 md:text-sm">
                   工作日 9:00 - 18:00
                 </p>
               </div>
@@ -243,7 +232,7 @@ export function SupportClient({
                     onChange={(e) => setSearchQuery(e.target.value)}
                     type="text"
                     placeholder="搜索问题..."
-                    className="w-full rounded-2xl border border-zinc-700 bg-[#11111a] py-3 pl-11 pr-4 text-sm text-white placeholder:text-zinc-500 outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/60"
+                    className="w-full rounded-2xl border border-zinc-300 bg-white py-3 pl-11 pr-4 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900/60"
                   />
                   <svg
                     className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500"
@@ -262,10 +251,10 @@ export function SupportClient({
               </div>
 
               {filteredFaqs.length === 0 ? (
-                <div className="mx-auto max-w-4xl rounded-2xl border border-zinc-800 bg-[#11111a] py-16 text-center">
-                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-900">
+                <div className="mx-auto max-w-4xl rounded-2xl border border-zinc-200 bg-white py-16 text-center shadow-sm">
+                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100">
                     <svg
-                      className="h-10 w-10 text-zinc-500"
+                      className="h-10 w-10 text-zinc-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -278,7 +267,7 @@ export function SupportClient({
                       />
                     </svg>
                   </div>
-                  <h3 className="mb-2 text-base font-medium text-white sm:text-lg">
+                  <h3 className="mb-2 text-base font-medium text-zinc-900 sm:text-lg">
                     未找到相关问题
                   </h3>
                   <p className="text-sm text-zinc-500 sm:text-base">
@@ -290,7 +279,7 @@ export function SupportClient({
                   {filteredFaqs.map((faq) => (
                     <div
                       key={faq.id}
-                      className="overflow-hidden rounded-2xl border border-zinc-800 bg-[#11111a]"
+                      className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"
                     >
                       <button
                         type="button"
@@ -299,20 +288,20 @@ export function SupportClient({
                             prev === faq.id ? null : faq.id
                           )
                         }
-                        className="flex w-full items-center gap-4 p-5 text-left transition-colors hover:bg-[#181824]"
+                        className="flex w-full items-center gap-4 p-5 text-left transition-colors hover:bg-zinc-50"
                       >
                         <div
                           className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl transition-colors ${
                             expandedFaq === faq.id
-                              ? "bg-amber-500/20"
-                              : "bg-zinc-900"
+                              ? "bg-zinc-900 text-white"
+                              : "bg-zinc-100 text-zinc-600"
                           }`}
                         >
                           <svg
                             className={`h-5 w-5 transition-colors ${
                               expandedFaq === faq.id
-                                ? "text-amber-400"
-                                : "text-zinc-400"
+                                ? "text-white"
+                                : "text-zinc-500"
                             }`}
                             fill="none"
                             stroke="currentColor"
@@ -330,8 +319,8 @@ export function SupportClient({
                           <h3
                             className={`text-sm font-medium transition-colors sm:text-base ${
                               expandedFaq === faq.id
-                                ? "text-amber-400"
-                                : "text-white"
+                                ? "text-zinc-900"
+                                : "text-zinc-900"
                             }`}
                           >
                             {faq.question}
@@ -360,9 +349,9 @@ export function SupportClient({
                       </button>
 
                       {expandedFaq === faq.id && (
-                        <div className="border-t border-zinc-800 bg-[#0b0b11]">
+                        <div className="border-t border-zinc-200 bg-zinc-50">
                           <div className="px-5 pb-5 pt-0">
-                            <div className="faq-answer prose prose-sm prose-invert max-w-none text-zinc-200">
+                            <div className="faq-answer prose prose-sm max-w-none text-zinc-700">
                               <div
                                 dangerouslySetInnerHTML={{
                                   __html: faq.answer_html || "",
@@ -370,12 +359,12 @@ export function SupportClient({
                               />
                             </div>
 
-                            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-800 pt-4 text-xs text-zinc-400 sm:text-sm">
+                            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-zinc-200 pt-4 text-xs text-zinc-500 sm:text-sm">
                               <span>这个答案对您有帮助吗？</span>
                               <div className="flex items-center gap-2">
                                 <button
                                   type="button"
-                                  className="inline-flex items-center gap-1 rounded-lg bg-zinc-800 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:bg-green-500/20 hover:text-green-400 sm:text-sm"
+                                  className="inline-flex items-center gap-1 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-700 transition-colors hover:bg-green-50 hover:text-green-600 sm:text-sm"
                                 >
                                   <svg
                                     className="h-4 w-4"
@@ -394,7 +383,7 @@ export function SupportClient({
                                 </button>
                                 <button
                                   type="button"
-                                  className="inline-flex items-center gap-1 rounded-lg bg-zinc-800 px-3 py-1.5 text-xs text-zinc-300 transition-colors hover:bg-red-500/20 hover:text-red-400 sm:text-sm"
+                                  className="inline-flex items-center gap-1 rounded-lg bg-zinc-100 px-3 py-1.5 text-xs text-zinc-700 transition-colors hover:bg-red-50 hover:text-red-500 sm:text-sm"
                                 >
                                   <svg
                                     className="h-4 w-4"
@@ -420,12 +409,12 @@ export function SupportClient({
                   ))}
 
                   {/* Bottom contact online service */}
-                  <div className="mt-8 border-t border-zinc-800 pt-6 text-center text-sm text-zinc-400">
+                  <div className="mt-8 border-t border-zinc-200 pt-6 text-center text-sm text-zinc-600">
                     <p className="mb-4">没有找到您想要的答案？</p>
                     <button
                       type="button"
                       onClick={openQQService}
-                      className="inline-flex items-center gap-2 text-sm font-medium text-amber-400 transition-colors hover:text-amber-300"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-zinc-900 transition-colors hover:text-zinc-700"
                     >
                       <svg
                         className="h-5 w-5"

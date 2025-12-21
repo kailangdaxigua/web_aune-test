@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const groups = [
   { value: "purchase_channels", label: "购买渠道" },
@@ -48,6 +49,8 @@ export default function ManageFooterLinksPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [deleteTarget, setDeleteTarget] = useState<FooterLink | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
     link_group: "purchase_channels" as GroupValue,
@@ -194,19 +197,27 @@ export default function ManageFooterLinksPage() {
     }
   }
 
-  async function deleteLink(link: FooterLink) {
-    if (!window.confirm(`确定要删除 "${link.label}" 吗？`)) return;
+  function deleteLink(link: FooterLink) {
+    setDeleteTarget(link);
+  }
 
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
     try {
       const { error } = await supabase
         .from("footer_links")
         .delete()
-        .eq("id", link.id);
+        .eq("id", deleteTarget.id);
       if (error) throw error;
       await fetchLinks();
     } catch (err: any) {
       console.error("Failed to delete link:", err);
       setErrorMessage("删除失败: " + (err?.message || "未知错误"));
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   }
 

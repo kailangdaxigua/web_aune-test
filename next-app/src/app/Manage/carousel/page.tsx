@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 const positionOptions = [
   { value: "left", label: "左对齐" },
@@ -68,6 +69,8 @@ export default function ManageCarouselPage() {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [errorMessage, setErrorMessage] = useState<string>("");
+  const [deleteTarget, setDeleteTarget] = useState<Slide | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
@@ -245,16 +248,21 @@ export default function ManageCarouselPage() {
     }
   }
 
-  async function deleteSlide(slide: Slide) {
-    if (!window.confirm("确定要删除这张轮播图吗？")) return;
+  function deleteSlide(slide: Slide) {
+    setDeleteTarget(slide);
+  }
 
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
     try {
-      const urls = [slide.image_url, slide.mobile_image_url].filter(Boolean) as string[];
+      const urls = [deleteTarget.image_url, deleteTarget.mobile_image_url].filter(Boolean) as string[];
 
       const { error } = await supabase
         .from("home_carousel")
         .delete()
-        .eq("id", slide.id);
+        .eq("id", deleteTarget.id);
       if (error) throw error;
 
       try {
@@ -267,6 +275,9 @@ export default function ManageCarouselPage() {
     } catch (err: any) {
       console.error("Failed to delete slide:", err);
       setErrorMessage("删除失败: " + (err?.message || "未知错误"));
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   }
 
@@ -325,8 +336,8 @@ export default function ManageCarouselPage() {
   }
 
   return (
-    <div className="carousel-manager">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="carousel-manager space-y-6">
+      <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">轮播图管理</h1>
           <p className="mt-1 text-sm text-zinc-400">管理首页轮播图内容</p>
@@ -334,7 +345,7 @@ export default function ManageCarouselPage() {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-amber-500/40 transition-colors hover:from-amber-500 hover:to-amber-400"
+          className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black shadow-lg shadow-amber-500/40 transition-colors hover:bg-amber-400"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -349,121 +360,147 @@ export default function ManageCarouselPage() {
       </div>
 
       {errorMessage && !showModal && (
-        <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-300">
           {errorMessage}
         </div>
       )}
 
-      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-[#11111a]">
-        {isLoading ? (
-          <div className="p-8 text-center text-sm text-zinc-400">加载中...</div>
-        ) : orderedSlides.length === 0 ? (
-          <div className="p-8 text-center text-sm text-zinc-400">暂无轮播图</div>
-        ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-[#161621] text-xs text-zinc-400">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium">图片</th>
-                <th className="px-4 py-3 text-left font-medium">标题/文案</th>
-                <th className="px-4 py-3 text-left font-medium">链接</th>
-                <th className="px-4 py-3 text-left font-medium">时间</th>
-                <th className="px-4 py-3 text-left font-medium">排序</th>
-                <th className="px-4 py-3 text-left font-medium">状态</th>
-                <th className="px-4 py-3 text-right font-medium">操作</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-800">
-              {orderedSlides.map((s, idx) => (
-                <tr key={s.id} className="transition-colors hover:bg-[#181824]">
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={s.image_url}
-                        alt={s.title || "slide"}
-                        className="h-14 w-24 rounded-lg object-cover"
-                      />
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      {s.mobile_image_url ? (
-                        <img
-                          src={s.mobile_image_url}
-                          alt={s.title || "mobile"}
-                          className="h-14 w-10 rounded-lg object-cover"
-                        />
-                      ) : (
-                        <div className="h-14 w-10 rounded-lg bg-zinc-900" />
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <p className="font-medium text-white">{s.title || "-"}</p>
-                    <p className="mt-1 text-xs text-zinc-500">
-                      {s.overlay_title || ""} {s.overlay_subtitle || ""}
+      {isLoading ? (
+        <div className="rounded-2xl border border-zinc-800 bg-[#11111a] p-10 text-center text-sm text-zinc-400">
+          加载中...
+        </div>
+      ) : orderedSlides.length === 0 ? (
+        <div className="rounded-2xl border border-zinc-800 bg-[#11111a] p-10 text-center text-sm text-zinc-400">
+          暂无轮播图，点击右上角“添加轮播”开始创建。
+        </div>
+      ) : (
+        <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          {orderedSlides.map((s, idx) => (
+            <div
+              key={s.id}
+              className="flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#11111a] shadow-sm"
+            >
+              <div className="relative">
+                {/* 主图预览 */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={s.image_url}
+                  alt={s.title || "slide"}
+                  className="h-56 w-full object-cover"
+                />
+
+                {/* 状态标签 */}
+                <div className="absolute left-4 top-4 flex items-center gap-2">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
+                      s.is_active
+                        ? "bg-emerald-500/15 text-emerald-300"
+                        : "bg-zinc-700/60 text-zinc-300"
+                    }`}
+                  >
+                    {s.is_active ? "已启用" : "未启用"}
+                  </span>
+                </div>
+
+                {/* 序号圆点 */}
+                <div className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-xs font-medium text-white">
+                  {idx + 1}
+                </div>
+              </div>
+
+              <div className="flex flex-1 flex-col border-t border-zinc-800 bg-[#11111a] px-5 py-4">
+                <div className="mb-3 flex items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-medium text-white" title={s.title || undefined}>
+                      {s.title || "未命名轮播图"}
                     </p>
-                  </td>
-                  <td className="px-4 py-4">
-                    {s.link_url ? (
+                    {(s.overlay_title || s.overlay_subtitle) && (
+                      <p className="mt-1 line-clamp-2 text-xs text-zinc-400">
+                        {s.overlay_title}
+                        {s.overlay_title && s.overlay_subtitle ? " · " : ""}
+                        {s.overlay_subtitle}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mb-3 space-y-1 text-[11px] text-zinc-500">
+                  <div>
+                    <span className="text-zinc-400">展示时间：</span>
+                    <span>
+                      {s.start_at
+                        ? s.start_at.slice(0, 16).replace("T", " ")
+                        : "不限"}
+                      {"  ~  "}
+                      {s.end_at ? s.end_at.slice(0, 16).replace("T", " ") : "不限"}
+                    </span>
+                  </div>
+                  {s.link_url && (
+                    <div className="flex items-center gap-1">
+                      <span className="text-zinc-400">链接：</span>
                       <a
                         href={s.link_url}
                         target={s.link_target || "_self"}
                         rel="noreferrer"
-                        className="text-xs text-amber-300 hover:underline"
+                        className="truncate text-[11px] text-amber-300 hover:underline"
+                        title={s.link_url}
                       >
                         {s.link_url}
                       </a>
-                    ) : (
-                      <span className="text-xs text-zinc-500">-</span>
-                    )}
-                  </td>
-                  <td className="px-4 py-4 text-xs text-zinc-400">
-                    <div>
-                      <div>开始：{s.start_at ? s.start_at.slice(0, 16).replace("T", " ") : "-"}</div>
-                      <div>结束：{s.end_at ? s.end_at.slice(0, 16).replace("T", " ") : "-"}</div>
                     </div>
-                  </td>
-                  <td className="px-4 py-4">
+                  )}
+                </div>
+
+                <div className="mt-auto border-t border-zinc-800 pt-3">
+                  <div className="flex items-center justify-between gap-3">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-zinc-300">{s.sort_order}</span>
                       <button
                         onClick={() => moveUp(idx)}
-                        className="rounded p-1 text-zinc-400 transition-colors hover:bg-zinc-700/60 hover:text-white"
-                        title="上移"
+                        className="inline-flex items-center gap-1 rounded-lg bg-zinc-900 px-2.5 py-1 text-[11px] text-zinc-300 transition-colors hover:bg-zinc-800"
                       >
-                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
+                        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M5 15l7-7 7 7"
+                          />
                         </svg>
+                        上移
                       </button>
                       <button
                         onClick={() => moveDown(idx)}
-                        className="rounded p-1 text-zinc-400 transition-colors hover:bg-zinc-700/60 hover:text-white"
-                        title="下移"
+                        className="inline-flex items-center gap-1 rounded-lg bg-zinc-900 px-2.5 py-1 text-[11px] text-zinc-300 transition-colors hover:bg-zinc-800"
                       >
-                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                        <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="2"
+                            d="M19 9l-7 7-7-7"
+                          />
                         </svg>
+                        下移
                       </button>
                     </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <button
-                      onClick={() => toggleActive(s)}
-                      className={`rounded-full px-2 py-1 text-xs font-medium transition-colors ${
-                        s.is_active
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-red-500/20 text-red-400"
-                      }`}
-                    >
-                      {s.is_active ? "启用" : "禁用"}
-                    </button>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center justify-end gap-2">
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleActive(s)}
+                        className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors ${
+                          s.is_active
+                            ? "bg-emerald-500/20 text-emerald-300"
+                            : "bg-zinc-800 text-zinc-300"
+                        }`}
+                      >
+                        {s.is_active ? "已上线" : "已下线"}
+                      </button>
                       <button
                         onClick={() => openEditModal(s)}
-                        className="rounded p-2 text-zinc-400 transition-colors hover:bg-zinc-700/60 hover:text-white"
+                        className="inline-flex items-center rounded-lg bg-zinc-900 p-1.5 text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
                         title="编辑"
                       >
-                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -474,10 +511,10 @@ export default function ManageCarouselPage() {
                       </button>
                       <button
                         onClick={() => deleteSlide(s)}
-                        className="rounded p-2 text-red-400 transition-colors hover:bg-red-500/20"
+                        className="inline-flex items-center rounded-lg bg-zinc-900 p-1.5 text-red-400 transition-colors hover:bg-red-500/20"
                         title="删除"
                       >
-                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -487,13 +524,32 @@ export default function ManageCarouselPage() {
                         </svg>
                       </button>
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* 添加轮播占位卡片 */}
+          <button
+            type="button"
+            onClick={openCreateModal}
+            className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-700 bg-[#0b0b11] text-sm text-zinc-500 transition-colors hover:border-amber-500/60 hover:text-amber-300"
+          >
+            <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/60">
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+            </div>
+            <span>添加轮播图</span>
+          </button>
+        </div>
+      )}
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 p-4 pt-20">
@@ -700,6 +756,30 @@ export default function ManageCarouselPage() {
           </div>
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="删除轮播图"
+        description={
+          deleteTarget && (
+            <>
+              <p className="mb-2">
+                确定要删除这张轮播图吗？
+              </p>
+              <p className="text-xs text-zinc-500">
+                此操作不可撤销，将同时删除存储中的轮播图片文件。
+              </p>
+            </>
+          )
+        }
+        confirmLabel={deleting ? "正在删除..." : "确认删除"}
+        cancelLabel="取消"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+      />
     </div>
   );
 }

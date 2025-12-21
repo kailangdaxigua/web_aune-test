@@ -84,7 +84,7 @@ export function DealersClient({
   );
 
   return (
-    <div className="dealers-page min-h-screen bg-[#050509] pt-20 text-white">
+    <div className="dealers-page min-h-screen bg-[#050509] pt-20 text-zinc-900">
       {/* Hero */}
       <section className="bg-gradient-to-b from-[#0b0b11] to-[#050509] py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -100,7 +100,7 @@ export function DealersClient({
       </section>
 
       {/* Tabs */}
-      <section className="sticky top-20 z-30 border-y border-zinc-800/60 bg-[#11111a]/80 py-4 backdrop-blur-md">
+      <section className="sticky top-20 z-30 border-y border-zinc-200 bg-white py-4 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-center gap-4">
             {TABS.map((tab) => (
@@ -110,8 +110,8 @@ export function DealersClient({
                 onClick={() => setActiveTab(tab.value)}
                 className={`flex items-center gap-2 rounded-xl border px-6 py-3 text-sm font-medium transition-colors sm:text-base ${
                   activeTab === tab.value
-                    ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-                    : "border-transparent text-zinc-300 hover:border-zinc-700 hover:bg-zinc-900/60 hover:text-white"
+                    ? "border-zinc-900 bg-zinc-100 text-zinc-900"
+                    : "border-transparent text-zinc-600 hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-900"
                 }`}
               >
                 <span>{tab.label}</span>
@@ -122,20 +122,20 @@ export function DealersClient({
       </section>
 
       {/* Content */}
-      <section className="py-12">
+      <section className="py-12 bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {activeTab === "offline" ? (
             <>
               {/* Filters */}
-              <div className="mb-8 flex flex-wrap items-center gap-4 rounded-2xl border border-zinc-800 bg-[#11111a]/80 p-4">
-                <span className="text-sm text-zinc-400">筛选地区：</span>
+              <div className="mb-8 flex flex-wrap items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+                <span className="text-sm text-zinc-700">筛选地区：</span>
                 <select
                   value={selectedProvince}
                   onChange={(e) => {
                     setSelectedProvince(e.target.value);
                     setSelectedCity("all");
                   }}
-                  className="h-10 rounded-lg border border-zinc-700 bg-[#050509] px-3 text-sm text-white outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/60"
+                  className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900/60"
                 >
                   {provinces.map((p) => (
                     <option key={p.value} value={p.value}>
@@ -147,7 +147,7 @@ export function DealersClient({
                   value={selectedCity}
                   onChange={(e) => setSelectedCity(e.target.value)}
                   disabled={selectedProvince === "all"}
-                  className="h-10 rounded-lg border border-zinc-700 bg-[#050509] px-3 text-sm text-white outline-none disabled:cursor-not-allowed disabled:opacity-60 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/60"
+                  className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none disabled:cursor-not-allowed disabled:opacity-60 focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900/60"
                 >
                   {cities.map((c) => (
                     <option key={c.value} value={c.value}>
@@ -162,10 +162,10 @@ export function DealersClient({
               </div>
 
               {offlineDealers.length === 0 ? (
-                <div className="rounded-2xl border border-zinc-800 bg-[#11111a] py-16 text-center">
-                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-900">
+                <div className="rounded-2xl border border-zinc-200 bg-white py-16 text-center shadow-sm">
+                  <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-zinc-100">
                     <svg
-                      className="h-10 w-10 text-zinc-500"
+                      className="h-10 w-10 text-zinc-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -184,7 +184,7 @@ export function DealersClient({
                       />
                     </svg>
                   </div>
-                  <h3 className="mb-2 text-base font-medium text-white sm:text-lg">
+                  <h3 className="mb-2 text-base font-medium text-zinc-900 sm:text-lg">
                     该地区暂无体验店
                   </h3>
                   <p className="text-sm text-zinc-500 sm:text-base">
@@ -196,23 +196,23 @@ export function DealersClient({
                   {offlineDealers.map((dealer) => (
                     <div
                       key={dealer.id}
-                      className="group rounded-2xl border border-zinc-800 bg-[#11111a] p-5 transition-colors hover:border-amber-500/40"
+                      className="group rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm transition-colors hover:border-zinc-900 hover:shadow-md"
                     >
                       <div className="mb-4 flex items-start justify-between">
-                        <h3 className="text-lg font-semibold text-white transition-colors group-hover:text-amber-400">
+                        <h3 className="text-lg font-medium text-zinc-900 transition-colors group-hover:text-zinc-950">
                           {dealer.name}
                         </h3>
                         {dealer.is_featured && (
-                          <span className="ml-2 rounded-full bg-amber-500/15 px-2 py-0.5 text-xs font-medium text-amber-300">
+                          <span className="ml-2 rounded-full bg-zinc-900 px-2 py-0.5 text-xs font-medium text-white">
                             推荐
                           </span>
                         )}
                       </div>
 
-                      <div className="space-y-3 text-sm text-zinc-300">
+                      <div className="space-y-3 text-sm text-zinc-700">
                         <div className="flex items-start gap-2">
                           <svg
-                            className="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-400/80"
+                            className="mt-0.5 h-4 w-4 flex-shrink-0 text-zinc-500"
                             fill="none"
                             stroke="currentColor"
                             viewBox="0 0 24 24"
@@ -271,7 +271,7 @@ export function DealersClient({
                             </svg>
                             <a
                               href={`tel:${dealer.phone}`}
-                              className="hover:text-amber-400"
+                              className="hover:text-zinc-900"
                             >
                               {dealer.phone}
                             </a>
@@ -305,10 +305,10 @@ export function DealersClient({
           ) : (
             <>
               {onlineDealers.length === 0 ? (
-                <div className="rounded-2xl border border-zinc-800 bg-[#11111a] py-16 text-center">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-900">
+                <div className="rounded-2xl border border-zinc-200 bg-white py-16 text-center shadow-sm">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-zinc-100">
                     <svg
-                      className="h-8 w-8 text-zinc-500"
+                      className="h-8 w-8 text-zinc-400"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -326,24 +326,24 @@ export function DealersClient({
                   </p>
                 </div>
               ) : (
-                <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-[#11111a]">
-                  <table className="w-full text-sm">
-                    <thead className="bg-[#181824] text-xs text-zinc-400">
+                <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+                  <table className="w-full text-sm text-zinc-900">
+                    <thead className="bg-zinc-50 text-xs text-zinc-500">
                       <tr>
                         <th className="px-6 py-4 text-left font-medium">店铺名称</th>
                         <th className="px-6 py-4 text-left font-medium">授权平台</th>
                         <th className="px-6 py-4 text-right font-medium">操作</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-zinc-800">
+                    <tbody className="divide-y divide-zinc-100">
                       {onlineDealers.map((dealer) => (
                         <tr
                           key={dealer.id}
-                          className="transition-colors hover:bg-[#181824]"
+                          className="transition-colors hover:bg-zinc-50"
                         >
                           <td className="px-6 py-4 align-top">
                             <div>
-                              <p className="font-medium text-white">
+                              <p className="font-medium text-zinc-900">
                                 {dealer.name}
                               </p>
                               {dealer.description && (
@@ -353,7 +353,7 @@ export function DealersClient({
                               )}
                             </div>
                           </td>
-                          <td className="px-6 py-4 align-top text-zinc-300">
+                          <td className="px-6 py-4 align-top text-zinc-700">
                             {dealer.platform}
                           </td>
                           <td className="px-6 py-4 text-right align-top">
@@ -362,7 +362,7 @@ export function DealersClient({
                                 href={dealer.store_url}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="inline-flex items-center gap-2 rounded-lg bg-amber-500/20 px-4 py-2 text-xs font-medium text-amber-300 transition-colors hover:bg-amber-500/30 sm:text-sm"
+                                className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-zinc-800 sm:text-sm"
                               >
                                 前往店铺
                                 <svg

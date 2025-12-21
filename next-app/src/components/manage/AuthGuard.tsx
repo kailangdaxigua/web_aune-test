@@ -45,8 +45,19 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   if (checking) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center bg-[#050509] text-sm text-zinc-400">
-        正在验证登录状态...
+      <div className="flex min-h-screen flex-col items-center justify-center bg-white text-sm text-zinc-500">
+        <div className="mb-6 text-center">
+          <p className="text-xs font-semibold tracking-[0.35em] text-zinc-400">
+            AUNE ADMIN
+          </p>
+        </div>
+        <div className="mb-4 h-8 w-8 animate-spin rounded-full border-2 border-zinc-200 border-t-zinc-900" />
+        <div className="mb-3 h-0.5 w-40 overflow-hidden rounded-full bg-zinc-100">
+          <div className="h-full w-1/2 animate-[loading-bar_1.4s_ease-in-out_infinite] rounded-full bg-zinc-900" />
+        </div>
+        <p className="text-xs tracking-wide text-zinc-500">
+          正在进入管理后台，请稍候...
+        </p>
       </div>
     );
   }

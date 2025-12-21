@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
 
 type Category = {
   id: number;
@@ -32,6 +33,8 @@ export default function ProductsManagePage() {
   const [loading, setLoading] = useState(true);
   const [filterCategory, setFilterCategory] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState<Product | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -130,17 +133,25 @@ export default function ProductsManagePage() {
     }
   }
 
-  async function deleteProduct(product: Product) {
-    if (!window.confirm(`确定要删除产品 "${product.name}" 吗？`)) return;
+  function deleteProduct(product: Product) {
+    setDeleteTarget(product);
+  }
 
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+
+    setDeleting(true);
     const { error } = await supabase
       .from("products")
       .delete()
-      .eq("id", product.id);
+      .eq("id", deleteTarget.id);
 
     if (!error) {
-      setProducts((prev) => prev.filter((p) => p.id !== product.id));
+      setProducts((prev) => prev.filter((p) => p.id !== deleteTarget.id));
     }
+
+    setDeleting(false);
+    setDeleteTarget(null);
   }
 
   return (
@@ -199,120 +210,133 @@ export default function ProductsManagePage() {
         </select>
       </div>
 
-      {/* Table */}
-      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-[#11111a]">
-        {loading ? (
-          <div className="p-8 text-center text-sm text-zinc-400">
-            <svg
-              className="mx-auto h-8 w-8 animate-spin text-amber-500"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
+      {/* List as cards */}
+      {loading ? (
+        <div className="rounded-2xl border border-zinc-800 bg-[#11111a] p-10 text-center text-sm text-zinc-400">
+          <svg
+            className="mx-auto mb-3 h-8 w-8 animate-spin text-amber-500"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          正在加载产品...
+        </div>
+      ) : filteredProducts.length === 0 ? (
+        <div className="rounded-2xl border border-zinc-800 bg-[#11111a] p-10 text-center text-sm text-zinc-400">
+          暂无产品，点击右上角“添加产品”开始创建。
+        </div>
+      ) : (
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {filteredProducts.map((product) => (
+            <div
+              key={product.id}
+              className="flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#11111a] shadow-sm"
             >
-              <circle
-                className="opacity-25"
-                cx="12"
-                cy="12"
-                r="10"
-                stroke="currentColor"
-                strokeWidth="4"
-              ></circle>
-              <path
-                className="opacity-75"
-                fill="currentColor"
-                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-              ></path>
-            </svg>
-          </div>
-        ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-[#161621] text-xs text-zinc-400">
-              <tr>
-                <th className="px-4 py-3 text-left font-medium">产品</th>
-                <th className="px-4 py-3 text-left font-medium">分类</th>
-                <th className="px-4 py-3 text-left font-medium">标签</th>
-                <th className="px-4 py-3 text-left font-medium">状态</th>
-                <th className="px-4 py-3 text-right font-medium">操作</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-zinc-800">
-              {filteredProducts.map((product) => (
-                <tr
-                  key={product.id}
-                  className="transition-colors hover:bg-[#181824]"
-                >
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-3">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      {product.cover_image ? (
-                        <img
-                          src={product.cover_image}
-                          alt={product.name}
-                          className="h-12 w-12 rounded-lg object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-zinc-800">
-                          <svg
-                            className="h-6 w-6 text-zinc-500"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                        </div>
-                      )}
-                      <div>
-                        <p className="text-sm font-medium text-white">
-                          {product.name}
-                        </p>
-                        <p className="text-xs text-zinc-400">{product.model}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 text-sm text-zinc-300">
-                    {product.category?.name || "-"}
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex gap-1">
-                      {product.is_hot && (
-                        <span className="rounded bg-red-500/20 px-2 py-0.5 text-xs text-red-400">
-                          HOT
-                        </span>
-                      )}
-                      {product.is_new && (
-                        <span className="rounded bg-green-500/20 px-2 py-0.5 text-xs text-green-400">
-                          NEW
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
+              <div className="relative flex items-center gap-4 border-b border-zinc-800 bg-[#161621] px-4 py-4">
+                {/* 封面图 */}
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {product.cover_image ? (
+                  <img
+                    src={product.cover_image}
+                    alt={product.name}
+                    className="h-16 w-16 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="flex h-16 w-16 items-center justify-center rounded-lg bg-zinc-800">
+                    <svg
+                      className="h-7 w-7 text-zinc-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                  </div>
+                )}
+
+                <div className="min-w-0 flex-1">
+                  <p
+                    className="truncate text-sm font-medium text-white"
+                    title={product.name}
+                  >
+                    {product.name}
+                  </p>
+                  <p className="mt-0.5 text-xs text-zinc-400">{product.model}</p>
+
+                  <div className="mt-2 flex flex-wrap items-center gap-1 text-[11px]">
+                    {product.category?.name && (
+                      <span className="rounded-full bg-zinc-900 px-2 py-0.5 text-zinc-300">
+                        {product.category.name}
+                      </span>
+                    )}
+                    {product.is_hot && (
+                      <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-red-400">
+                        HOT
+                      </span>
+                    )}
+                    {product.is_new && (
+                      <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-emerald-300">
+                        NEW
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 上架状态角标 */}
+                <div className="flex flex-col items-end gap-1 text-[11px]">
+                  <span
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 font-medium ${
+                      product.is_active
+                        ? "bg-emerald-500/15 text-emerald-300"
+                        : "bg-zinc-700/60 text-zinc-300"
+                    }`}
+                  >
+                    {product.is_active ? "已上架" : "已下架"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-1 flex-col px-4 py-3 text-xs text-zinc-400">
+                <div className="mt-auto border-t border-zinc-800 pt-3">
+                  <div className="flex items-center justify-between gap-3">
                     <button
                       onClick={() => toggleActive(product)}
-                      className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                      className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors ${
                         product.is_active
-                          ? "bg-green-500/20 text-green-400"
-                          : "bg-red-500/20 text-red-400"
+                          ? "bg-emerald-500/20 text-emerald-300"
+                          : "bg-zinc-800 text-zinc-300"
                       }`}
                     >
-                      {product.is_active ? "已上架" : "已下架"}
+                      {product.is_active ? "下架" : "上架"}
                     </button>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center justify-end gap-2">
+
+                    <div className="flex items-center gap-2">
                       <Link
                         href={`/Manage/products/${product.id}`}
-                        className="rounded p-2 text-zinc-400 transition-colors hover:bg-zinc-700/60 hover:text-white"
+                        className="inline-flex items-center rounded-lg bg-zinc-900 p-1.5 text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
                         title="编辑"
                       >
                         <svg
-                          className="h-4 w-4"
+                          className="h-3.5 w-3.5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -327,11 +351,11 @@ export default function ProductsManagePage() {
                       </Link>
                       <button
                         onClick={() => deleteProduct(product)}
-                        className="rounded p-2 text-red-400 transition-colors hover:bg-red-500/20"
+                        className="inline-flex items-center rounded-lg bg-zinc-900 p-1.5 text-red-400 transition-colors hover:bg-red-500/20"
                         title="删除"
                       >
                         <svg
-                          className="h-4 w-4"
+                          className="h-3.5 w-3.5"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -345,24 +369,37 @@ export default function ProductsManagePage() {
                         </svg>
                       </button>
                     </div>
-                  </td>
-                </tr>
-              ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
 
-              {!loading && filteredProducts.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-8 text-center text-sm text-zinc-500"
-                  >
-                    暂无产品
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        )}
-      </div>
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="删除产品"
+        description={
+          deleteTarget && (
+            <>
+              <p className="mb-2">
+                确定要删除产品
+                <span className="mx-1 font-medium text-white">{deleteTarget.name}</span>
+                吗？
+              </p>
+              <p className="text-xs text-zinc-500">此操作不可撤销，请谨慎操作。</p>
+            </>
+          )
+        }
+        confirmLabel={deleting ? "正在删除..." : "确认删除"}
+        cancelLabel="取消"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          if (!deleting) setDeleteTarget(null);
+        }}
+      />
     </div>
   );
 }
