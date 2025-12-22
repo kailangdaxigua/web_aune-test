@@ -148,11 +148,11 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#050509]">
       {/* Hero Carousel */}
-      <section className="relative h-[calc(100vh)] min-h-[640px] overflow-hidden border-b border-zinc-800/80 bg-black">
+      <section className="relative mx-auto w-full max-w-[2560px] aspect-2/1 overflow-hidden border-b border-zinc-800/80 bg-black">
         {carouselItems.length > 0 ? (
           <HeroCarouselClient items={carouselItems} />
         ) : (
-          <div className="flex h-full items-center justify-center bg-gradient-to-br from-zinc-900 via-black to-zinc-950">
+          <div className="flex h-full items-center justify-center bg-linear-to-br from-zinc-900 via-black to-zinc-950">
             <div className="px-4 text-center">
               <h1 className="mb-4 text-4xl font-bold text-white sm:text-6xl">
                 AUNE<span className="text-amber-500">.</span>
@@ -187,7 +187,7 @@ export default async function Home() {
                   playsInline
                 />
               )}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#050509] via-transparent to-black/40" />
+              <div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#050509] via-transparent to-black/40" />
             </div>
 
             {(primaryVideo.title || primaryVideo.description) && (

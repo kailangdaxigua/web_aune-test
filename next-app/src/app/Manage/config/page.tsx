@@ -147,7 +147,7 @@ export default function ManageSiteConfigPage() {
         <button
           onClick={saveConfig}
           disabled={isSaving || isLoading || !config}
-          className="rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 px-6 py-2 text-sm font-medium text-white shadow-lg shadow-amber-500/40 transition-colors hover:from-amber-500 hover:to-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+          className="rounded-lg bg-linear-to-r from-amber-600 to-amber-500 px-6 py-2 text-sm font-medium text-white shadow-lg shadow-amber-500/40 transition-colors hover:from-amber-500 hover:to-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isSaving ? "保存中..." : "保存配置"}
         </button>
