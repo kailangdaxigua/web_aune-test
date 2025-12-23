@@ -146,7 +146,7 @@ export default async function Home() {
   ]);
 
   return (
-    <div className="min-h-screen bg-[#050509]">
+    <div className="min-h-screen bg-[#050509] overflow-x-hidden">
       {/* Hero Carousel */}
       <section className="relative w-screen h-[80vh] sm:h-[80vh] md:h-[80vh] lg:h-[80vh] xl:h-[80vh] 2xl:h-[87vh] overflow-hidden border-b border-zinc-800/80 bg-black">
         {carouselItems.length > 0 ? (
@@ -212,11 +212,11 @@ export default async function Home() {
 
       <main className="bg-white">
         {/* Home Featured Section */}
-        <section className="bg-white py-4 md:py-2">
+        <section className="bg-white py-4 md:py-4">
 
           {featuredItems.length > 0 ? (
             <>
-              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-2">
+              <div className="grid grid-cols-1 gap-2 md:grid-cols-2 md:gap-4">
                 {featuredItems.map((item) => {
                   const href = item.target_url || "#";
                   const target =

@@ -65,12 +65,12 @@ export default async function ProductListPage(props: PageProps) {
   const { category, products } = await getCategoryAndProducts(categorySlug);
 
   return (
-    <div className="product-list-page pt-20 bg-[#050509] text-white min-h-screen">
+    <div className="product-list-page pt-15 bg-[#050509] text-white min-h-screen">
       {/* Hero section */}
-      <section className="bg-gradient-to-b from-[#0b0b11] to-[#050509] py-20">
+      <section className="bg-white py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
-            <h1 className="mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
+            <h1 className="mb-4 text-3xl text-slate-950 font-bold sm:text-4xl md:text-5xl">
               {category?.name || "全部产品"}
             </h1>
             {category?.description && (
@@ -83,7 +83,7 @@ export default async function ProductListPage(props: PageProps) {
       </section>
 
       {/* Products grid */}
-      <section className="bg-[#050509] py-16">
+      <section className="bg-white">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Empty state */}
           {products.length === 0 ? (
@@ -119,7 +119,7 @@ export default async function ProductListPage(props: PageProps) {
                     href={`/product/${product.slug}`}
                     className="group cursor-pointer"
                   >
-                    <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-2xl bg-zinc-900">
+                    <div className="relative mb-4 aspect-4/3 overflow-hidden rounded-2xl bg-zinc-900">
                       {product.cover_image ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -160,8 +160,8 @@ export default async function ProductListPage(props: PageProps) {
                       </div>
 
                       {/* Hover overlay */}
-                      <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <span className="mb-6 ml-6 flex items-center gap-2 text-sm font-medium text-amber-400">
+                      <div className="absolute inset-0 flex items-end bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <span className="mb-6 ml-6 flex items-center gap-2 text-sm font-medium text-white">
                           查看详情
                           <svg
                             className="h-4 w-4"
@@ -181,7 +181,7 @@ export default async function ProductListPage(props: PageProps) {
                     </div>
 
                     <div>
-                      <h3 className="mb-1 text-lg font-medium text-white transition-colors group-hover:text-amber-400 sm:text-xl">
+                      <h3 className="mb-1 text-lg font-medium text-white transition-colors group-hover:text-white sm:text-xl">
                         {product.name}
                       </h3>
                       {product.model && (
