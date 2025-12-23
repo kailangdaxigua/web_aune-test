@@ -49,7 +49,7 @@ export default function HeroCarouselClient({ items }: HeroCarouselClientProps) {
       <img
         src={current.image_url || ""}
         alt={current.title || "AUNE"}
-        className="h-full w-full object-contain"
+        className="h-full w-full object-cover"
       />
       <div className="absolute inset-0" />
 

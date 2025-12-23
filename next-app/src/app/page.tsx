@@ -148,7 +148,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#050509]">
       {/* Hero Carousel */}
-      <section className="relative mx-auto w-full max-w-[2560px] aspect-2/1 overflow-hidden border-b border-zinc-800/80 bg-black">
+      <section className="relative w-screen h-[80vh] sm:h-[80vh] md:h-[80vh] lg:h-[80vh] xl:h-[80vh] 2xl:h-[87vh] overflow-hidden border-b border-zinc-800/80 bg-black">
         {carouselItems.length > 0 ? (
           <HeroCarouselClient items={carouselItems} />
         ) : (
@@ -222,7 +222,7 @@ export default async function Home() {
                   const target =
                     item.link_target || (item.is_external ? "_blank" : "_self");
                   const content = (
-                    <div className="relative h-[420px] md:h-[696px] overflow-hidden bg-white">
+                    <div className="relative h-[60vh] sm:h-[60vh] md:h-[65vh] lg:h-[70vh] xl:h-[75vh] 2xl:h-[80vh] overflow-hidden bg-white">
                       {item.image_url ? (
                         // 这里先用普通 img，后续可以改成 next/image
                         // eslint-disable-next-line @next/next/no-img-element
