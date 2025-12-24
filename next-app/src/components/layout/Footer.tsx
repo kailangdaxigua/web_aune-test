@@ -13,6 +13,7 @@ type FooterLink = {
   is_external?: boolean | null;
   icon_class?: string | null;
   page?: { slug: string } | null;
+  image?: string | null;
 };
 
 type SiteConfig = {
@@ -78,7 +79,7 @@ export default function Footer() {
         supabase
           .from("footer_links")
           .select(
-            "id, label, url, link_group, is_external, icon_class, page:pages(slug)"
+            "id, label, url, link_group, is_external, icon_class, image, page:pages(slug)"
           )
           .eq("is_active", true)
           .order("sort_order"),
@@ -92,7 +93,7 @@ export default function Footer() {
         if (footerRes.error) {
           console.error("Failed to fetch footer_links:", footerRes.error.message);
         } else {
-          setLinks((footerRes.data || []) as FooterLink[]);
+          setLinks(((footerRes.data || []) as unknown) as FooterLink[]);
         }
 
         if (configRes.error) {
@@ -217,7 +218,7 @@ export default function Footer() {
             <h3 className="mb-4 font-semibold text-white">官方平台</h3>
             <ul className="space-y-3">
               {officialPlatforms.map((link) => (
-                <li key={link.id}>
+                <li key={link.id} className="relative group">
                   <a
                     href={resolveUrl(link)}
                     target="_blank"
@@ -231,6 +232,17 @@ export default function Footer() {
                     )}
                     {link.label}
                   </a>
+
+                  {link.image && (
+                    <div className="pointer-events-none absolute left-full top-1/2 z-20 w-40 -translate-x-45 -translate-y-1/2 rounded-lg border border-zinc-700 bg-black/90 p-2 opacity-0 shadow-lg transition-opacity duration-150 group-hover:opacity-100">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={link.image}
+                        alt={link.label}
+                        className="h-auto w-full object-contain"
+                      />
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>

@@ -161,7 +161,7 @@ export function DownloadsClient({ initialDownloads }: { initialDownloads: Downlo
   return (
     <div className="downloads-page min-h-screen bg-[#050509] pt-20 text-white">
       {/* Hero */}
-      <section className="bg-gradient-to-b from-[#0b0b11] to-[#050509] py-16">
+      <section className="bg-linear-to-b from-[#0b0b11] to-[#050509] py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <h1 className="mb-4 text-3xl font-bold sm:text-4xl md:text-5xl">
@@ -179,7 +179,7 @@ export function DownloadsClient({ initialDownloads }: { initialDownloads: Downlo
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-8 lg:flex-row">
             {/* Left nav */}
-            <aside className="flex-shrink-0 lg:w-64">
+            <aside className="shrink-0 lg:w-64">
               <div className="sticky top-28 rounded-2xl border border-zinc-800 bg-[#11111a]/80 p-4">
                 <h3 className="mb-4 px-2 text-sm font-medium uppercase tracking-wider text-zinc-400">
                   产品分类
@@ -197,7 +197,7 @@ export function DownloadsClient({ initialDownloads }: { initialDownloads: Downlo
                       }`}
                     >
                       <svg
-                        className="h-5 w-5 flex-shrink-0"
+                        className="h-5 w-5 shrink-0"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -309,7 +309,7 @@ export function DownloadsClient({ initialDownloads }: { initialDownloads: Downlo
                           onClick={() => toggleExpand(download.id)}
                           className="flex w-full items-center gap-4 p-4 text-left"
                         >
-                          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-zinc-900">
+                          <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-zinc-900">
                             <svg
                               className="h-7 w-7 text-amber-500"
                               fill="none"
@@ -409,7 +409,7 @@ export function DownloadsClient({ initialDownloads }: { initialDownloads: Downlo
                             </div>
                           </div>
                           <svg
-                            className={`h-5 w-5 flex-shrink-0 text-zinc-400 transition-transform ${
+                            className={`h-5 w-5 shrink-0 text-zinc-400 transition-transform ${
                               expandedId === download.id ? "rotate-180" : ""
                             }`}
                             fill="none"

@@ -329,6 +329,13 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
+-- 1. 给 footer_links 表新增 image 字段的 SQL
+
+ALTER TABLE footer_links
+ADD COLUMN IF NOT EXISTS image TEXT;
+
+
+
 -- ============================================
 -- RLS 策略
 -- ============================================

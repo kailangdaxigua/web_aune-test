@@ -37,6 +37,7 @@ type FooterLink = {
   icon_class: string | null;
   sort_order: number;
   is_active: boolean;
+  image?: string | null;
   page?: PageRef | null;
 };
 
@@ -51,6 +52,7 @@ export default function ManageFooterLinksPage() {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [deleteTarget, setDeleteTarget] = useState<FooterLink | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [form, setForm] = useState({
     link_group: "purchase_channels" as GroupValue,
@@ -61,7 +63,44 @@ export default function ManageFooterLinksPage() {
     icon_class: "",
     sort_order: 0,
     is_active: true,
+    image: "",
   });
+
+  async function handleImageUpload(event: any) {
+    const file = event.target?.files?.[0];
+    if (!file) return;
+
+    try {
+      setUploadingImage(true);
+
+      const ext = file.name.split(".").pop();
+      const filePath = `footer-hover/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("images")
+        .upload(filePath, file, {
+          cacheControl: "3600",
+          upsert: true,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from("images").getPublicUrl(filePath);
+
+      setForm((prev) => ({ ...prev, image: publicUrl }));
+      setErrorMessage("");
+    } catch (err: any) {
+      console.error("Failed to upload image:", err);
+      setErrorMessage("图片上传失败: " + (err?.message || "未知错误"));
+    } finally {
+      setUploadingImage(false);
+      if (event.target) {
+        event.target.value = "";
+      }
+    }
+  }
 
   async function fetchLinks() {
     setIsLoading(true);
@@ -123,6 +162,7 @@ export default function ManageFooterLinksPage() {
       icon_class: "",
       sort_order: groupedLinks.length,
       is_active: true,
+      image: "",
     });
     setErrorMessage("");
     setShowModal(true);
@@ -139,6 +179,7 @@ export default function ManageFooterLinksPage() {
       icon_class: link.icon_class || "",
       sort_order: link.sort_order ?? 0,
       is_active: !!link.is_active,
+      image: link.image || "",
     });
     setErrorMessage("");
     setShowModal(true);
@@ -174,6 +215,7 @@ export default function ManageFooterLinksPage() {
         icon_class: form.icon_class || null,
         sort_order: Number(form.sort_order) || 0,
         is_active: form.is_active,
+        image: form.image?.trim() || null,
       };
 
       if (editingId) {
@@ -471,6 +513,46 @@ export default function ManageFooterLinksPage() {
                   className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-4 py-2 text-sm text-white outline-none focus:border-amber-500"
                 />
               </div>
+
+              {form.link_group === "official_platforms" && (
+                <div>
+                  <label className="mb-2 block text-sm text-zinc-200">悬浮图片（可选）</label>
+                  <div className="space-y-3 rounded-lg border border-zinc-700 bg-[#11111a] p-3 text-sm text-zinc-200">
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={uploadingImage}
+                        className="flex-1 text-xs text-zinc-300 file:mr-3 file:rounded-md file:border-0 file:bg-zinc-800 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-zinc-100 hover:file:bg-zinc-700"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setForm((p) => ({ ...p, image: "" }))}
+                        className="rounded-md border border-zinc-600 px-2 py-1 text-xs text-zinc-200 hover:bg-zinc-700"
+                      >
+                        清除
+                      </button>
+                    </div>
+
+                    <p className="text-xs text-zinc-400">
+                      上传一张用于前端悬浮展示的二维码或说明图片，支持 PNG/JPG 等格式。
+                    </p>
+
+                    {form.image && (
+                      <div className="mt-2 rounded-md border border-zinc-700 bg-black/40 p-2">
+                        <p className="mb-1 text-xs text-zinc-400">当前图片预览：</p>
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={form.image}
+                          alt="悬浮图片预览"
+                          className="max-h-40 w-auto object-contain"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="mb-2 block text-sm text-zinc-200">链接类型</label>
