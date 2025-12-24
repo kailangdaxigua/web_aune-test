@@ -279,7 +279,7 @@ export default function ManageFeaturedPage() {
 
         <button
           onClick={startCreate}
-          className="rounded-lg bg-gradient-to-r from-amber-600 to-amber-500 px-4 py-2 text-sm font-medium text-white shadow-lg shadow-amber-500/40 transition-colors hover:from-amber-500 hover:to-amber-400"
+          className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black shadow-lg shadow-white/20 transition-colors hover:bg-zinc-200"
         >
           新建推荐
         </button>
@@ -288,7 +288,7 @@ export default function ManageFeaturedPage() {
       {/* Form modal */}
       {showFormModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 p-4 pt-20">
-          <div className="w-full max-w-4xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0b12] shadow-2xl">
+          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0b12] shadow-2xl">
             <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
               <h2 className="text-lg font-semibold text-white">
                 {editingId == null ? "新建推荐" : "编辑推荐"}
@@ -321,7 +321,7 @@ export default function ManageFeaturedPage() {
                   <input
                     value={form.title ?? ""}
                     onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
                   />
                 </div>
 
@@ -332,7 +332,7 @@ export default function ManageFeaturedPage() {
                   <input
                     value={form.subtitle ?? ""}
                     onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
                   />
                 </div>
               </div>
@@ -347,7 +347,7 @@ export default function ManageFeaturedPage() {
                     type="datetime-local"
                     value={form.start_at}
                     onChange={(e) => setForm((f) => ({ ...f, start_at: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
                   />
                 </div>
                 <div className="space-y-2">
@@ -358,46 +358,29 @@ export default function ManageFeaturedPage() {
                     type="datetime-local"
                     value={form.end_at}
                     onChange={(e) => setForm((f) => ({ ...f, end_at: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
                   />
                 </div>
               </div>
 
-              {/* Desktop image dropzone */}
+              {/* Desktop image uploader + preview */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-zinc-200">
-                  推荐位图片（必填）
+                  推荐位图片
                 </label>
-                <div className="flex flex-col gap-4 md:flex-row">
-                  <div className="flex-1">
-                    <div className="flex h-28 items-center justify-center rounded-xl border-2 border-dashed border-zinc-700 bg-[#0b0b12] px-4 text-center text-xs text-zinc-400 sm:h-32 sm:text-sm">
-                      <div>
-                        <div className="mb-2 text-zinc-300">点击选择图片上传，或粘贴地址</div>
-                        <div className="flex flex-wrap items-center justify-center gap-3">
-                          <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-600 bg-black/40 px-3 py-1.5 text-xs text-zinc-100 hover:border-amber-500 hover:text-amber-300">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => handleUpload(e, "desktop")}
-                            />
-                            {uploadingField === "desktop" ? "上传中..." : "点击选择图片"}
-                          </label>
-                        </div>
-                        <input
-                          value={form.image_url}
-                          onChange={(e) => setForm((f) => ({ ...f, image_url: e.target.value }))}
-                          placeholder="或直接粘贴图片地址：https://...（桌面端大图）"
-                          className="mt-2 w-full rounded-lg border border-zinc-700 bg-black/40 px-3 py-2 text-xs text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40 sm:text-sm"
-                        />
-                        <p className="mt-1 text-[11px] text-zinc-500">
-                          支持 image/*，建议宽图（例如 2400x1200），文件请先上传到图床后粘贴地址
-                        </p>
-                      </div>
-                    </div>
+                <div className="grid gap-3 md:grid-cols-2 items-center">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-600 bg-black/40 px-3 py-1.5 text-xs text-zinc-100 hover:border-zinc-300 hover:text-white">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleUpload(e, "desktop")}
+                      />
+                      {uploadingField === "desktop" ? "上传中..." : "点击选择图片"}
+                    </label>
                   </div>
-                  <div className="mt-2 w-full md:mt-0 md:w-64">
-                    <div className="mb-1 text-xs font-medium text-zinc-300">预览</div>
+                  <div className="mt-2 w-full md:mt-0 md:w-full md:max-w-xs">
                     <div className="flex h-28 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 sm:h-32">
                       {form.image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -414,43 +397,24 @@ export default function ManageFeaturedPage() {
                 </div>
               </div>
 
-              {/* Mobile image dropzone */}
+              {/* Mobile image uploader + preview */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-zinc-200">
-                  移动端图片（可选）
+                  移动端图片
                 </label>
-                <div className="flex flex-col gap-4 md:flex-row">
-                  <div className="flex-1">
-                    <div className="flex h-24 items-center justify-center rounded-xl border-2 border-dashed border-zinc-700 bg-[#0b0b12] px-4 text-center text-xs text-zinc-400 sm:h-28 sm:text-sm">
-                      <div>
-                        <div className="mb-2 text-zinc-300">点击选择图片上传，或粘贴地址</div>
-                        <div className="flex flex-wrap items-center justify-center gap-3">
-                          <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-600 bg-black/40 px-3 py-1.5 text-xs text-zinc-100 hover:border-amber-500 hover:text-amber-300">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => handleUpload(e, "mobile")}
-                            />
-                            {uploadingField === "mobile" ? "上传中..." : "点击选择图片"}
-                          </label>
-                        </div>
-                        <input
-                          value={form.mobile_image_url}
-                          onChange={(e) =>
-                            setForm((f) => ({ ...f, mobile_image_url: e.target.value }))
-                          }
-                          placeholder="或直接粘贴图片地址：https://...（移动端纵向图，可选）"
-                          className="mt-2 w-full rounded-lg border border-zinc-700 bg-black/40 px-3 py-2 text-xs text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40 sm:text-sm"
-                        />
-                        <p className="mt-1 text-[11px] text-zinc-500">
-                          未填写时前台会自动使用上方桌面图片
-                        </p>
-                      </div>
-                    </div>
+                <div className="grid gap-3 md:grid-cols-2 items-center">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-600 bg-black/40 px-3 py-1.5 text-xs text-zinc-100 hover:border-zinc-300 hover:text-white">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handleUpload(e, "mobile")}
+                      />
+                      {uploadingField === "mobile" ? "上传中..." : "点击选择图片"}
+                    </label>
                   </div>
-                  <div className="mt-2 w-full md:mt-0 md:w-40">
-                    <div className="mb-1 text-xs font-medium text-zinc-300">移动端预览</div>
+                  <div className="mt-2 w-full md:mt-0 md:w-full md:max-w-[180px]">
                     <div className="flex h-24 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 sm:h-28">
                       {form.mobile_image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -474,7 +438,7 @@ export default function ManageFeaturedPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,0.9fr)_minmax(0,1.6fr)]">
                 <div className="space-y-2">
                   <label className="block text-sm font-medium text-zinc-200">
                     链接地址（必填）
@@ -483,16 +447,30 @@ export default function ManageFeaturedPage() {
                     value={form.link_url ?? ""}
                     onChange={(e) => setForm((f) => ({ ...f, link_url: e.target.value }))}
                     placeholder="/product/x8 或 https://..."
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
                   />
                 </div>
 
-                <div className="space-y-2">
+                <div className="space-y-2 md:max-w-[120px]">
+                  <label className="block text-sm font-medium text-zinc-200">
+                    排序
+                  </label>
+                  <input
+                    type="number"
+                    value={form.sort_order}
+                    onChange={(e) =>
+                      setForm((f) => ({ ...f, sort_order: Number(e.target.value) || 0 }))
+                    }
+                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
+                  />
+                </div>
+
+                <div className="space-y-1 md:pl-2">
                   <label className="block text-sm font-medium text-zinc-200">
                     链接选项
                   </label>
-                  <div className="space-y-2 rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white">
-                    <label className="flex items-center gap-2 text-xs text-zinc-200">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-zinc-300">
+                    <label className="flex items-center gap-2">
                       <input
                         type="checkbox"
                         checked={form.is_external}
@@ -503,9 +481,9 @@ export default function ManageFeaturedPage() {
                             link_target: e.target.checked ? "_blank" : f.link_target,
                           }))
                         }
-                        className="h-4 w-4 rounded border-zinc-600 bg-[#0b0b12] text-amber-500"
+                        className="h-4 w-4 rounded border-zinc-600 bg-[#0b0b12] text-white"
                       />
-                      外部链接（新窗口打开）
+                      <span className="whitespace-nowrap">外部链接（新窗口打开）</span>
                     </label>
                     <select
                       value={form.link_target ?? "_self"}
@@ -515,26 +493,12 @@ export default function ManageFeaturedPage() {
                           link_target: e.target.value as "_self" | "_blank",
                         }))
                       }
-                      className="mt-2 w-full rounded-lg border border-zinc-700 bg-black/30 px-3 py-1.5 text-xs text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
+                      className="mt-1 h-8 rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-xs text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
                     >
                       <option value="_self">当前窗口</option>
                       <option value="_blank">新窗口</option>
                     </select>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <label className="block text-sm font-medium text-zinc-200">
-                    排序（数字越小越靠前）
-                  </label>
-                  <input
-                    type="number"
-                    value={form.sort_order}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, sort_order: Number(e.target.value) || 0 }))
-                    }
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-amber-500 focus:ring-2 focus:ring-amber-500/40"
-                  />
                 </div>
               </div>
 
@@ -546,22 +510,20 @@ export default function ManageFeaturedPage() {
                     onChange={(e) =>
                       setForm((f) => ({ ...f, is_active: e.target.checked }))
                     }
-                    className="h-4 w-4 rounded border-zinc-600 bg-[#0b0b12] text-amber-500"
+                    className="h-4 w-4 rounded border-zinc-600 bg-[#0b0b12] text-white"
                   />
                   启用（显示在首页）
                 </label>
-                <div className="flex flex-col items-end gap-1 text-right">
                   {error && (
                     <div className="max-w-xs text-xs text-red-400">{error}</div>
                   )}
                   <button
                     type="submit"
                     disabled={saving}
-                    className="rounded-lg bg-amber-500 px-5 py-2 text-sm font-medium text-black disabled:opacity-60"
+                    className="rounded-lg bg-white px-5 py-2 text-sm font-medium text-black shadow-md shadow-white/10 transition-colors hover:bg-zinc-200 disabled:opacity-60"
                   >
                     {saving ? "保存中..." : editingId == null ? "创建" : "保存修改"}
                   </button>
-                </div>
               </div>
             </form>
           </div>
@@ -639,7 +601,7 @@ export default function ManageFeaturedPage() {
                         href={item.target_url}
                         target={item.link_target || "_self"}
                         rel="noreferrer"
-                        className="truncate text-[11px] text-amber-300 hover:underline"
+                        className="truncate text-[11px] text-zinc-200 hover:underline"
                         title={item.target_url}
                       >
                         {item.target_url}

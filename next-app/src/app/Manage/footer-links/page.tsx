@@ -326,7 +326,7 @@ export default function ManageFooterLinksPage() {
         <h1 className="text-2xl font-bold text-white">页脚链接管理</h1>
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-amber-400"
+          className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-zinc-200"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
@@ -348,7 +348,7 @@ export default function ManageFooterLinksPage() {
             onClick={() => setActiveGroup(group.value)}
             className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
               activeGroup === group.value
-                ? "bg-amber-500 text-black"
+                ? "bg-white text-black"
                 : "bg-[#11111a] text-zinc-300 hover:bg-zinc-800"
             }`}
           >
@@ -365,7 +365,7 @@ export default function ManageFooterLinksPage() {
             {currentGroupLabel}暂无链接
             <button
               onClick={openCreateModal}
-              className="mt-3 block w-full text-sm text-amber-300 hover:text-amber-200"
+              className="mt-3 block w-full text-sm text-zinc-200 hover:text-white"
             >
               添加第一个链接
             </button>
@@ -468,7 +468,7 @@ export default function ManageFooterLinksPage() {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0b12] shadow-2xl">
+          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0b12] shadow-2xl">
             <div className="flex items-center justify-between border-b border-zinc-800 p-6">
               <h2 className="text-xl font-bold text-white">
                 {editingId ? "编辑链接" : "添加链接"}
@@ -487,94 +487,116 @@ export default function ManageFooterLinksPage() {
                 </div>
               )}
 
-              <div>
-                <label className="mb-2 block text-sm text-zinc-200">所属分组</label>
-                <select
-                  value={form.link_group}
-                  onChange={(e) =>
-                    setForm((p) => ({ ...p, link_group: e.target.value as GroupValue }))
-                  }
-                  className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-4 py-2 text-sm text-white outline-none focus:border-amber-500"
-                >
-                  {groups.map((g) => (
-                    <option key={g.value} value={g.value}>
-                      {g.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm text-zinc-200">链接名称 *</label>
-                <input
-                  value={form.label}
-                  onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
-                  placeholder="如：天猫旗舰店"
-                  className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-4 py-2 text-sm text-white outline-none focus:border-amber-500"
-                />
-              </div>
-
-              {form.link_group === "official_platforms" && (
+              {/* 行 1：所属分组 + 链接名称 */}
+              <div className="grid gap-4 md:grid-cols-2">
                 <div>
-                  <label className="mb-2 block text-sm text-zinc-200">悬浮图片（可选）</label>
-                  <div className="space-y-3 rounded-lg border border-zinc-700 bg-[#11111a] p-3 text-sm text-zinc-200">
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        disabled={uploadingImage}
-                        className="flex-1 text-xs text-zinc-300 file:mr-3 file:rounded-md file:border-0 file:bg-zinc-800 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-zinc-100 hover:file:bg-zinc-700"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setForm((p) => ({ ...p, image: "" }))}
-                        className="rounded-md border border-zinc-600 px-2 py-1 text-xs text-zinc-200 hover:bg-zinc-700"
-                      >
-                        清除
-                      </button>
-                    </div>
+                  <label className="mb-2 block text-sm text-zinc-200">所属分组</label>
+                  <select
+                    value={form.link_group}
+                    onChange={(e) =>
+                      setForm((p) => ({ ...p, link_group: e.target.value as GroupValue }))
+                    }
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-4 py-2 text-sm text-white outline-none focus:border-white"
+                  >
+                    {groups.map((g) => (
+                      <option key={g.value} value={g.value}>
+                        {g.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-                    <p className="text-xs text-zinc-400">
-                      上传一张用于前端悬浮展示的二维码或说明图片，支持 PNG/JPG 等格式。
-                    </p>
+                <div>
+                  <label className="mb-2 block text-sm text-zinc-200">链接名称 *</label>
+                  <input
+                    value={form.label}
+                    onChange={(e) => setForm((p) => ({ ...p, label: e.target.value }))}
+                    placeholder="如：天猫旗舰店"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-4 py-2 text-sm text-white outline-none focus:border-white"
+                  />
+                </div>
+              </div>
 
-                    {form.image && (
-                      <div className="mt-2 rounded-md border border-zinc-700 bg-black/40 p-2">
-                        <p className="mb-1 text-xs text-zinc-400">当前图片预览：</p>
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
-                          src={form.image}
-                          alt="悬浮图片预览"
-                          className="max-h-40 w-auto object-contain"
+              {/* 行 2：官方平台时 悬浮图片 + 链接类型；其他分组时 链接类型独占一行 */}
+              {form.link_group === "official_platforms" ? (
+                <div className="grid gap-4 md:grid-cols-2">
+                  <div>
+                    <label className="mb-2 block text-sm text-zinc-200">悬浮图片</label>
+                    <div className="space-y-3 rounded-lg border border-zinc-700 bg-[#11111a] p-3 text-sm text-zinc-200">
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          disabled={uploadingImage}
+                          className="flex-1 text-xs text-zinc-300 file:mr-3 file:rounded-md file:border-0 file:bg-zinc-800 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-zinc-100 hover:file:bg-zinc-700"
                         />
+                        <button
+                          type="button"
+                          onClick={() => setForm((p) => ({ ...p, image: "" }))}
+                          className="rounded-md border border-zinc-600 px-2 py-2 text-xs text-zinc-200 hover:bg-zinc-700 whitespace-nowrap"
+                        >
+                          清除
+                        </button>
                       </div>
-                    )}
+                      {form.image && (
+                        <div className="mt-2 rounded-md border border-zinc-700 bg-black/40 p-2">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={form.image}
+                            alt="悬浮图片预览"
+                            className="max-h-40 w-auto object-contain"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mb-2 block text-sm text-zinc-200">链接类型</label>
+                    <div className="flex flex-col gap-2 text-sm text-white">
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          checked={!form.is_external}
+                          onChange={() => setForm((p) => ({ ...p, is_external: false }))}
+                        />
+                        内部链接/页面
+                      </label>
+                      <label className="flex items-center gap-2">
+                        <input
+                          type="radio"
+                          checked={form.is_external}
+                          onChange={() => setForm((p) => ({ ...p, is_external: true }))}
+                        />
+                        外部链接
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <label className="mb-2 block text-sm text-zinc-200">链接类型</label>
+                  <div className="flex gap-6">
+                    <label className="flex items-center gap-2 text-sm text-white">
+                      <input
+                        type="radio"
+                        checked={!form.is_external}
+                        onChange={() => setForm((p) => ({ ...p, is_external: false }))}
+                      />
+                      内部链接/页面
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-white">
+                      <input
+                        type="radio"
+                        checked={form.is_external}
+                        onChange={() => setForm((p) => ({ ...p, is_external: true }))}
+                      />
+                      外部链接
+                    </label>
                   </div>
                 </div>
               )}
-
-              <div>
-                <label className="mb-2 block text-sm text-zinc-200">链接类型</label>
-                <div className="flex gap-6">
-                  <label className="flex items-center gap-2 text-sm text-white">
-                    <input
-                      type="radio"
-                      checked={!form.is_external}
-                      onChange={() => setForm((p) => ({ ...p, is_external: false }))}
-                    />
-                    内部链接/页面
-                  </label>
-                  <label className="flex items-center gap-2 text-sm text-white">
-                    <input
-                      type="radio"
-                      checked={form.is_external}
-                      onChange={() => setForm((p) => ({ ...p, is_external: true }))}
-                    />
-                    外部链接
-                  </label>
-                </div>
-              </div>
 
               {!form.is_external && (
                 <div>
@@ -582,7 +604,7 @@ export default function ManageFooterLinksPage() {
                   <select
                     value={form.page_id}
                     onChange={(e) => setForm((p) => ({ ...p, page_id: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-4 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-4 py-2 text-sm text-white outline-none focus:border-white"
                   >
                     <option value="">不关联页面</option>
                     {pages.map((page) => (
@@ -630,7 +652,7 @@ export default function ManageFooterLinksPage() {
                   type="checkbox"
                   checked={form.is_active}
                   onChange={(e) => setForm((p) => ({ ...p, is_active: e.target.checked }))}
-                  className="h-4 w-4 rounded border-zinc-600 bg-[#11111a] text-amber-500"
+                  className="h-4 w-4 rounded border-zinc-600 bg-[#11111a] text-white"
                 />
                 <span className="text-sm text-white">启用显示</span>
               </label>
@@ -646,7 +668,7 @@ export default function ManageFooterLinksPage() {
               <button
                 onClick={saveLink}
                 disabled={isSaving}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-medium text-black transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-white px-4 py-2 font-medium text-black transition-colors hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSaving ? "保存中..." : "保存"}
               </button>
