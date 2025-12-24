@@ -148,7 +148,7 @@ export default async function Home() {
   return (
     <div className="min-h-screen bg-[#050509] overflow-x-hidden">
       {/* Hero Carousel */}
-      <section className="relative w-screen h-[80vh] sm:h-[80vh] md:h-[80vh] lg:h-[80vh] xl:h-[80vh] 2xl:h-[87vh] overflow-hidden border-b border-zinc-800/80 bg-black">
+      <section className="relative w-full h-[89vh] overflow-hidden border-b border-zinc-800/80 bg-black">
         {carouselItems.length > 0 ? (
           <HeroCarouselClient items={carouselItems} />
         ) : (
@@ -212,7 +212,7 @@ export default async function Home() {
 
       <main className="bg-white">
         {/* Home Featured Section */}
-        <section className="bg-white py-4 md:py-4">
+        <section className="bg-white px-3 py-4 md:py-4 ">
 
           {featuredItems.length > 0 ? (
             <>
@@ -222,7 +222,7 @@ export default async function Home() {
                   const target =
                     item.link_target || (item.is_external ? "_blank" : "_self");
                   const content = (
-                    <div className="relative h-[60vh] sm:h-[60vh] md:h-[65vh] lg:h-[70vh] xl:h-[75vh] 2xl:h-[80vh] overflow-hidden bg-white">
+                    <div className="relative w-full aspect-video overflow-hidden bg-white">
                       {item.image_url ? (
                         // 这里先用普通 img，后续可以改成 next/image
                         // eslint-disable-next-line @next/next/no-img-element
