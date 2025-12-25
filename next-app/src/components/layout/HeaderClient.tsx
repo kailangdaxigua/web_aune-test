@@ -35,7 +35,7 @@ export default function HeaderClient({ categoryGroups }: HeaderClientProps) {
     "px-3 py-1.5 text-sm sm:text-[14px] font-medium transition-colors";
   const navLinkColor = scrolled
     ? "text-zinc-900 hover:text-black"
-    : "text-white hover:text-zinc-200";
+    : "text-white hover:text-zinc-200/60";
 
   return (
     <header
