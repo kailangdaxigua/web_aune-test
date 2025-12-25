@@ -377,28 +377,6 @@ export default function ManageFooterLinksPage() {
                 key={link.id}
                 className="flex items-center gap-4 rounded-xl border border-zinc-800 bg-[#0b0b12] p-4"
               >
-                <div className="flex flex-col gap-1">
-                  <button
-                    onClick={() => moveUp(index)}
-                    disabled={index === 0}
-                    className="rounded p-1 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
-                    title="上移"
-                  >
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 15l7-7 7 7" />
-                    </svg>
-                  </button>
-                  <button
-                    onClick={() => moveDown(index)}
-                    disabled={index === groupedLinks.length - 1}
-                    className="rounded p-1 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-30"
-                    title="下移"
-                  >
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </button>
-                </div>
 
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">

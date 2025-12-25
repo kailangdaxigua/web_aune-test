@@ -246,6 +246,44 @@ export default function ManageFeaturedPage() {
     }
   }
 
+  async function moveItem(item: FeaturedItem, direction: "up" | "down") {
+    const sorted = [...items].sort((a, b) => a.sort_order - b.sort_order);
+    const index = sorted.findIndex((it) => it.id === item.id);
+    if (index === -1) return;
+
+    const offset = direction === "up" ? -1 : 1;
+    const targetIndex = index + offset;
+    if (targetIndex < 0 || targetIndex >= sorted.length) return;
+
+    const other = sorted[targetIndex];
+    const currentOrder = item.sort_order;
+    const otherOrder = other.sort_order;
+
+    // 本地先交换顺序，提升响应速度
+    setItems((prev) =>
+      prev
+        .map((it) => {
+          if (it.id === item.id) return { ...it, sort_order: otherOrder };
+          if (it.id === other.id) return { ...it, sort_order: currentOrder };
+          return it;
+        })
+        .sort((a, b) => a.sort_order - b.sort_order)
+    );
+
+    // 落库
+    const { error } = await supabase
+      .from("home_featured")
+      .upsert([
+        { id: item.id, sort_order: otherOrder },
+        { id: other.id, sort_order: currentOrder },
+      ]);
+
+    if (error) {
+      // 还原并重新加载
+      await load();
+    }
+  }
+
   function remove(item: FeaturedItem) {
     setDeleteTarget(item);
   }
@@ -273,7 +311,7 @@ export default function ManageFeaturedPage() {
         <div>
           <h1 className="text-2xl font-bold text-white">首页精选推荐</h1>
           <p className="mt-1 text-sm text-zinc-400">
-            配置首页白色区域的精选图片（建议 4 张，按排序展示），前台展示会按 2×2 栅格自适应显示。
+            配置首页白色区域的精选图片。
           </p>
         </div>
 
@@ -514,16 +552,16 @@ export default function ManageFeaturedPage() {
                   />
                   启用（显示在首页）
                 </label>
-                  {error && (
-                    <div className="max-w-xs text-xs text-red-400">{error}</div>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={saving}
-                    className="rounded-lg bg-white px-5 py-2 text-sm font-medium text-black shadow-md shadow-white/10 transition-colors hover:bg-zinc-200 disabled:opacity-60"
-                  >
-                    {saving ? "保存中..." : editingId == null ? "创建" : "保存修改"}
-                  </button>
+                {error && (
+                  <div className="max-w-xs text-xs text-red-400">{error}</div>
+                )}
+                <button
+                  type="submit"
+                  disabled={saving}
+                  className="rounded-lg bg-white px-5 py-2 text-sm font-medium text-black shadow-md shadow-white/10 transition-colors hover:bg-zinc-200 disabled:opacity-60"
+                >
+                  {saving ? "保存中..." : editingId == null ? "创建" : "保存修改"}
+                </button>
               </div>
             </form>
           </div>
@@ -544,9 +582,9 @@ export default function ManageFeaturedPage() {
           {items.map((item, index) => (
             <div
               key={item.id}
-              className="flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#11111a] shadow-sm"
+              className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#11111a] shadow-sm transition-colors hover:border-zinc-600"
             >
-              {/* 图片预览 */}
+              {/* 图片预览 + 悬浮操作 */}
               <div className="relative">
                 <div className="h-40 w-full overflow-hidden bg-zinc-900">
                   {item.image_url ? (
@@ -563,45 +601,134 @@ export default function ManageFeaturedPage() {
                   )}
                 </div>
 
-                {/* 状态标签 */}
-                <div className="absolute left-4 top-4 flex items-center gap-2">
+                {/* 顶部状态 + 序号 */}
+                <div className="pointer-events-none absolute inset-x-4 top-4 flex items-center justify-between">
                   <span
-                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${
-                      item.is_active
+                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${item.is_active
                         ? "bg-emerald-500/15 text-emerald-300"
                         : "bg-zinc-700/60 text-zinc-300"
-                    }`}
+                      }`}
                   >
                     {item.is_active ? "已启用" : "未启用"}
                   </span>
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-xs font-medium text-white">
+                    {index + 1}
+                  </span>
                 </div>
 
-                {/* 序号 */}
-                <div className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-black/60 text-xs font-medium text-white">
-                  {index + 1}
+                {/* 悬浮操作层 */}
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:bg-black/55 group-hover:opacity-100">
+                  <div className="flex items-center gap-4 text-xs">
+                    {/* 启用 / 停用 */}
+                    <button
+                      type="button"
+                      onClick={() => toggleActive(item)}
+                      title={item.is_active ? "停用此推荐" : "启用此推荐"}
+                      className="inline-flex min-w-[96px] items-center justify-center gap-2.5 rounded-full bg-zinc-900/90 px-4 py-2 text-[11px] font-medium text-zinc-100 hover:bg-zinc-800"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <circle
+                          cx="10"
+                          cy="10"
+                          r="7"
+                          className={item.is_active ? "fill-emerald-400" : "fill-zinc-500"}
+                        />
+                        <path
+                          d="M8 10.5L9.5 12L12.5 8.5"
+                          stroke="black"
+                          strokeWidth="1.4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className={item.is_active ? "opacity-100" : "opacity-70"}
+                        />
+                      </svg>
+                      <span>{item.is_active ? "停用" : "启用"}</span>
+                    </button>
+
+                    {/* 编辑 */}
+                    <button
+                      type="button"
+                      onClick={() => startEdit(item)}
+                      title="编辑推荐"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800"
+                    >
+                      <svg
+                        className="h-5 w-5"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M5 13.5L5.6 11.1C5.7 10.7 5.9 10.4 6.1 10.2L11.9 4.4C12.5 3.8 13.4 3.8 14 4.4L15.6 6C16.2 6.6 16.2 7.5 15.6 8.1L9.8 13.9C9.6 14.1 9.3 14.3 8.9 14.4L6.5 15"
+                          stroke="currentColor"
+                          strokeWidth="1.4"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+
+                    {/* 删除 */}
+                    <button
+                      type="button"
+                      onClick={() => remove(item)}
+                      title="删除推荐"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/90 text-red-400 hover:bg-red-500/20"
+                    >
+                      <svg
+                        className="h-5.5 w-5.5"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M4.5 6.5H15.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M8.5 4.5H11.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M6.5 6.5L7 14C7.1 15 7.7 15.6 8.7 15.6H11.3C12.3 15.6 12.9 15 13 14L13.5 6.5"
+                          stroke="currentColor"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* 文案 & 信息 */}
-              <div className="flex flex-1 flex-col border-t border-zinc-800 bg-[#11111a] px-4 py-3 text-xs text-zinc-400">
-                <div className="mb-2 min-h-[40px]">
-                  <p className="truncate text-sm font-medium text-white" title={item.title || undefined}>
-                    {item.title || "(未命名推荐)"}
-                  </p>
-                  {item.subtitle && (
-                    <p className="mt-1 line-clamp-2 text-xs text-zinc-400">{item.subtitle}</p>
-                  )}
-                </div>
+              {/* 文案 & 信息 + 底部操作 */}
+              <div className="flex flex-1 flex-col border-t border-zinc-800 bg-[#11111a] px-4 pb-3 pt-3 text-xs text-zinc-200">
 
-                <div className="mb-2 space-y-1 text-[11px] text-zinc-500">
+                <p className="truncate text-sm font-semibold text-white" title={item.title || undefined}>
+                  {item.title || "(未命名推荐)"}
+                </p>
+                {item.subtitle && (
+                  <p className="mt-1 line-clamp-2 text-xs text-zinc-200/90">{item.subtitle}</p>
+                )}
+                <div className="mt-2 mb-2 space-y-1 text-[11px] text-zinc-300">
                   {item.target_url && (
                     <div className="flex items-center gap-1">
-                      <span className="text-zinc-400">链接：</span>
+                      <span className="text-zinc-200">链接：</span>
                       <a
                         href={item.target_url}
                         target={item.link_target || "_self"}
                         rel="noreferrer"
-                        className="truncate text-[11px] text-zinc-200 hover:underline"
+                        className="truncate text-[11px] text-zinc-50 hover:underline"
                         title={item.target_url}
                       >
                         {item.target_url}
@@ -609,7 +736,7 @@ export default function ManageFeaturedPage() {
                     </div>
                   )}
                   <div>
-                    <span className="text-zinc-400">展示时间：</span>
+                    <span className="text-zinc-200">展示时间：</span>
                     <span>
                       {item.start_at
                         ? item.start_at.slice(0, 16).replace("T", " ")
@@ -621,38 +748,8 @@ export default function ManageFeaturedPage() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-zinc-400">排序：</span>
-                    <span>{item.sort_order}</span>
-                  </div>
-                </div>
-
-                <div className="mt-auto border-t border-zinc-800 pt-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <button
-                      onClick={() => toggleActive(item)}
-                      className={`inline-flex items-center gap-1 rounded-lg px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                        item.is_active
-                          ? "bg-emerald-500/20 text-emerald-300"
-                          : "bg-zinc-800 text-zinc-300"
-                      }`}
-                    >
-                      {item.is_active ? "停用" : "启用"}
-                    </button>
-
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => startEdit(item)}
-                        className="inline-flex items-center rounded-lg bg-zinc-900 px-2 py-1 text-[11px] text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
-                      >
-                        编辑
-                      </button>
-                      <button
-                        onClick={() => remove(item)}
-                        className="inline-flex items-center rounded-lg bg-zinc-900 px-2 py-1 text-[11px] text-red-400 transition-colors hover:bg-red-500/20"
-                      >
-                        删除
-                      </button>
-                    </div>
+                    <span className="text-zinc-200">排序：</span>
+                    <span className="text-zinc-50">{item.sort_order}</span>
                   </div>
                 </div>
               </div>

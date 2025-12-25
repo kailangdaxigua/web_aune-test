@@ -345,7 +345,7 @@ export default function ManageCarouselPage() {
 
         <button
           onClick={openCreateModal}
-          className="flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-medium text-black shadow-lg shadow-amber-500/40 transition-colors hover:bg-amber-400"
+          className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 text-sm font-medium text-black shadow-lg shadow-white/30 transition-colors hover:bg-zinc-200"
         >
           <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -442,7 +442,7 @@ export default function ManageCarouselPage() {
                         href={s.link_url}
                         target={s.link_target || "_self"}
                         rel="noreferrer"
-                        className="truncate text-[11px] text-amber-300 hover:underline"
+                        className="truncate text-[11px] text-zinc-100 hover:underline"
                         title={s.link_url}
                       >
                         {s.link_url}
@@ -534,7 +534,7 @@ export default function ManageCarouselPage() {
           <button
             type="button"
             onClick={openCreateModal}
-            className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-700 bg-[#0b0b11] text-sm text-zinc-500 transition-colors hover:border-amber-500/60 hover:text-amber-300"
+            className="flex min-h-[260px] flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-700 bg-[#0b0b11] text-sm text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-200"
           >
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/60">
               <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -581,7 +581,7 @@ export default function ManageCarouselPage() {
                   <input
                     value={form.title}
                     onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   />
                 </div>
 
@@ -591,7 +591,7 @@ export default function ManageCarouselPage() {
                     type="number"
                     value={form.sort_order}
                     onChange={(e) => setForm((p) => ({ ...p, sort_order: Number(e.target.value) || 0 }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   />
                 </div>
               </div>
@@ -626,7 +626,7 @@ export default function ManageCarouselPage() {
                     {form.mobile_image_url ? (
                       <img src={form.mobile_image_url} alt="mobile" className="h-16 w-12 rounded-lg object-cover" />
                     ) : (
-                      <div className="h-16 w-12 rounded-lg bg-zinc-900" />
+                      <div className="h-16 w-16 rounded-lg bg-zinc-900" />
                     )}
                     <label className="cursor-pointer rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-zinc-200 transition-colors hover:border-zinc-500 hover:text-white">
                       {isUploading ? "上传中..." : form.mobile_image_url ? "更换" : "上传"}
@@ -649,7 +649,7 @@ export default function ManageCarouselPage() {
                     value={form.link_url}
                     onChange={(e) => setForm((p) => ({ ...p, link_url: e.target.value }))}
                     placeholder="https://... 或 /products/..."
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   />
                 </div>
                 <div>
@@ -657,7 +657,7 @@ export default function ManageCarouselPage() {
                   <select
                     value={form.link_target}
                     onChange={(e) => setForm((p) => ({ ...p, link_target: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   >
                     {targetOptions.map((t) => (
                       <option key={t.value} value={t.value}>
@@ -674,7 +674,7 @@ export default function ManageCarouselPage() {
                   <input
                     value={form.overlay_title}
                     onChange={(e) => setForm((p) => ({ ...p, overlay_title: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   />
                 </div>
                 <div>
@@ -682,7 +682,7 @@ export default function ManageCarouselPage() {
                   <input
                     value={form.overlay_subtitle}
                     onChange={(e) => setForm((p) => ({ ...p, overlay_subtitle: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   />
                 </div>
               </div>
@@ -693,7 +693,7 @@ export default function ManageCarouselPage() {
                   <select
                     value={form.overlay_position}
                     onChange={(e) => setForm((p) => ({ ...p, overlay_position: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   >
                     {positionOptions.map((pos) => (
                       <option key={pos.value} value={pos.value}>
@@ -707,7 +707,7 @@ export default function ManageCarouselPage() {
                   <label className="flex items-center gap-2 text-sm text-zinc-200">
                     <input
                       type="checkbox"
-                      className="h-4 w-4 rounded border-zinc-600 bg-[#11111a] text-amber-500"
+                      className="h-4 w-4 rounded border-zinc-600 bg-[#11111a] text-white"
                       checked={form.is_active}
                       onChange={(e) => setForm((p) => ({ ...p, is_active: e.target.checked }))}
                     />
@@ -723,7 +723,7 @@ export default function ManageCarouselPage() {
                     type="datetime-local"
                     value={form.start_at}
                     onChange={(e) => setForm((p) => ({ ...p, start_at: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   />
                 </div>
                 <div>
@@ -732,7 +732,7 @@ export default function ManageCarouselPage() {
                     type="datetime-local"
                     value={form.end_at}
                     onChange={(e) => setForm((p) => ({ ...p, end_at: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-amber-500"
+                    className="w-full rounded-lg border border-zinc-700 bg-[#11111a] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300"
                   />
                 </div>
               </div>
@@ -748,7 +748,7 @@ export default function ManageCarouselPage() {
               <button
                 onClick={saveSlide}
                 disabled={isSaving || isUploading}
-                className="inline-flex items-center justify-center rounded-lg bg-amber-500 px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center justify-center rounded-lg bg-white px-5 py-2 text-sm font-medium text-black transition-colors hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isUploading ? "上传中..." : isSaving ? "保存中..." : "保存"}
               </button>
