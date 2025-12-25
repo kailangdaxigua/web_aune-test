@@ -2,6 +2,24 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 export type DealerItem = {
   id: number;
@@ -100,24 +118,25 @@ export function DealersClient({
       </section>
 
       {/* Tabs */}
-      <section className="sticky top-20 z-30 border-y border-zinc-200 bg-white py-4 backdrop-blur-md">
+      <section className="border-y border-zinc-200 bg-white py-4">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center gap-4">
-            {TABS.map((tab) => (
-              <button
-                key={tab.value}
-                type="button"
-                onClick={() => setActiveTab(tab.value)}
-                className={`flex items-center gap-2 rounded-xl border px-6 py-3 text-sm font-medium transition-colors sm:text-base ${
-                  activeTab === tab.value
-                    ? "border-zinc-900 bg-zinc-100 text-zinc-900"
-                    : "border-transparent text-zinc-600 hover:border-zinc-300 hover:bg-zinc-100 hover:text-zinc-900"
-                }`}
-              >
-                <span>{tab.label}</span>
-              </button>
-            ))}
-          </div>
+          <Tabs
+            value={activeTab}
+            onValueChange={(v) => setActiveTab(v as "offline" | "online")}
+            className="flex justify-center"
+          >
+            <TabsList className="inline-flex gap-2 bg-zinc-100/80 p-1">
+              {TABS.map((tab) => (
+                <TabsTrigger
+                  key={tab.value}
+                  value={tab.value}
+                  className="px-5 py-2 text-sm sm:text-base"
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </Tabs>
         </div>
       </section>
 
@@ -129,32 +148,42 @@ export function DealersClient({
               {/* Filters */}
               <div className="mb-8 flex flex-wrap items-center gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
                 <span className="text-sm text-zinc-700">筛选地区：</span>
-                <select
+
+                <Select
                   value={selectedProvince}
-                  onChange={(e) => {
-                    setSelectedProvince(e.target.value);
+                  onValueChange={(value) => {
+                    setSelectedProvince(value);
                     setSelectedCity("all");
                   }}
-                  className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900/60"
                 >
-                  {provinces.map((p) => (
-                    <option key={p.value} value={p.value}>
-                      {p.label}
-                    </option>
-                  ))}
-                </select>
-                <select
+                  <SelectTrigger className="min-w-[140px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {provinces.map((p) => (
+                      <SelectItem key={p.value} value={p.value}>
+                        {p.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select
                   value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
+                  onValueChange={(value) => setSelectedCity(value)}
                   disabled={selectedProvince === "all"}
-                  className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm text-zinc-900 outline-none disabled:cursor-not-allowed disabled:opacity-60 focus:border-zinc-900 focus:ring-1 focus:ring-zinc-900/60"
                 >
-                  {cities.map((c) => (
-                    <option key={c.value} value={c.value}>
-                      {c.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="min-w-[140px] disabled:cursor-not-allowed">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((c) => (
+                      <SelectItem key={c.value} value={c.value}>
+                        {c.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
 
                 <span className="ml-auto text-xs text-zinc-500 sm:text-sm">
                   共 {offlineDealers.length} 家体验店
@@ -203,9 +232,9 @@ export function DealersClient({
                           {dealer.name}
                         </h3>
                         {dealer.is_featured && (
-                          <span className="ml-2 rounded-full bg-zinc-900 px-2 py-0.5 text-xs font-medium text-white">
+                          <Badge className="ml-2 bg-zinc-900 text-white hover:bg-zinc-900">
                             推荐
-                          </span>
+                          </Badge>
                         )}
                       </div>
 
@@ -327,21 +356,27 @@ export function DealersClient({
                 </div>
               ) : (
                 <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
-                  <table className="w-full text-sm text-zinc-900">
-                    <thead className="bg-zinc-50 text-xs text-zinc-500">
-                      <tr>
-                        <th className="px-6 py-4 text-left font-medium">店铺名称</th>
-                        <th className="px-6 py-4 text-left font-medium">授权平台</th>
-                        <th className="px-6 py-4 text-right font-medium">操作</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-100">
+                  <Table className="text-zinc-900">
+                    <TableHeader className="bg-zinc-50 text-xs text-zinc-500">
+                      <TableRow>
+                        <TableHead className="px-6 py-4 font-medium">
+                          店铺名称
+                        </TableHead>
+                        <TableHead className="px-6 py-4 font-medium">
+                          授权平台
+                        </TableHead>
+                        <TableHead className="px-6 py-4 text-right font-medium">
+                          操作
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody className="divide-y divide-zinc-100">
                       {onlineDealers.map((dealer) => (
-                        <tr
+                        <TableRow
                           key={dealer.id}
-                          className="transition-colors hover:bg-zinc-50"
+                          className="hover:bg-zinc-50"
                         >
-                          <td className="px-6 py-4 align-top">
+                          <TableCell className="px-6 py-4 align-top">
                             <div>
                               <p className="font-medium text-zinc-900">
                                 {dealer.name}
@@ -352,39 +387,45 @@ export function DealersClient({
                                 </p>
                               )}
                             </div>
-                          </td>
-                          <td className="px-6 py-4 align-top text-zinc-700">
+                          </TableCell>
+                          <TableCell className="px-6 py-4 align-top text-zinc-700">
                             {dealer.platform}
-                          </td>
-                          <td className="px-6 py-4 text-right align-top">
+                          </TableCell>
+                          <TableCell className="px-6 py-4 text-right align-top">
                             {dealer.store_url && (
-                              <a
-                                href={dealer.store_url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-medium text-white transition-colors hover:bg-zinc-800 sm:text-sm"
+                              <Button
+                                asChild
+                                size="sm"
+                                className="bg-zinc-900 text-white hover:bg-zinc-800"
                               >
-                                前往店铺
-                                <svg
-                                  className="h-4 w-4"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
+                                <a
+                                  href={dealer.store_url}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="inline-flex items-center gap-2"
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth="2"
-                                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                                  />
-                                </svg>
-                              </a>
+                                  前往店铺
+                                  <svg
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth="2"
+                                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                    />
+                                  </svg>
+                                </a>
+                              </Button>
                             )}
-                          </td>
-                        </tr>
+                          </TableCell>
+                        </TableRow>
                       ))}
-                    </tbody>
-                  </table>
+                    </TableBody>
+                  </Table>
                 </div>
               )}
             </>

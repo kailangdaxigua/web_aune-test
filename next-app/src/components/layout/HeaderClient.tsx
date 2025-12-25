@@ -32,6 +32,10 @@ interface HeaderClientProps {
 export default function HeaderClient({ categoryGroups }: HeaderClientProps) {
   // 是否已经滚动到一定距离，用于控制头部样式（背景、边框、文字颜色等）
   const [scrolled, setScrolled] = useState(false);
+  // 简单语言状态：仅用于展示当前选择（默认 Language）
+  const [language, setLanguage] = useState<"Language" | "简体中文" | "English">(
+    "Language",
+  );
 
   // 监听滚动事件，超过 80px 认为头部进入「已滚动」状态
   useEffect(() => {
@@ -84,8 +88,21 @@ export default function HeaderClient({ categoryGroups }: HeaderClientProps) {
 
                   // 外链导航项（例如 商城），使用原生 <a> 打开新窗口
                   if (item.external) {
-                    // 普通单链接导航项
-                  return (
+                    // 商城：仅展示文字，不跳转
+                    if (item.label === "商城") {
+                      return (
+                        <NavigationMenuItem key={item.label}>
+                          <span
+                            className={`${navLinkBase} ${navLinkColor} bg-transparent cursor-default select-none`}
+                          >
+                            {item.label}
+                          </span>
+                        </NavigationMenuItem>
+                      );
+                    }
+
+                    // 其他外链导航项
+                    return (
                       <NavigationMenuItem key={item.label}>
                         <NavigationMenuLink asChild>
                           <a
@@ -152,13 +169,38 @@ export default function HeaderClient({ categoryGroups }: HeaderClientProps) {
             </NavigationMenu>
           </div>
 
-          {/* 右侧 Language 按钮（仅桌面显示，占位语言切换） */}
-          <div className="hidden items-center lg:flex">
+          {/* 右侧 Language 下拉（仅桌面显示，悬浮选择） */}
+          <div className="relative hidden items-center lg:flex">
             <button
               type="button"
-              className={`${navLinkBase} ${navLinkColor} ml-6`}
+              className={`${navLinkBase} ${navLinkColor} ml-6 relative group inline-flex w-[96px] justify-center`}
             >
-              Language
+              {language}
+              {/* 悬浮语言选择菜单 */}
+              <div
+                className="pointer-events-none absolute left-1/2 top-full z-50  min-w-[140px] -translate-x-1/2 transform rounded-lg bg-transparent px-3 py-2 text-sm opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100"
+              >
+                <div
+                  className={
+                    scrolled
+                      ? "cursor-pointer py-1 text-center text-zinc-500 hover:text-zinc-700"
+                      : "cursor-pointer py-1 text-center text-zinc-300 hover:text-zinc-100"
+                  }
+                  onClick={() => setLanguage("简体中文")}
+                >
+                  简体中文
+                </div>
+                <div
+                  className={
+                    scrolled
+                      ? "cursor-pointer py-1 text-center text-zinc-500 hover:text-zinc-700"
+                      : "cursor-pointer py-1 text-center text-zinc-300 hover:text-zinc-100"
+                  }
+                  onClick={() => setLanguage("English")}
+                >
+                  English
+                </div>
+              </div>
             </button>
           </div>
 

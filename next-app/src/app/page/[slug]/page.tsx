@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 
 type CmsPage = {
@@ -37,6 +38,31 @@ export default async function GenericPage(props: PageProps) {
 
   if (!page) {
     notFound();
+  }
+
+  // 荣誉墙页面：使用单独布局，仅展示图片
+  if (slug === "honors") {
+    return (
+      <div className="static-page min-h-screen bg-[#050509] pt-20 text-white">
+        <section className="flex w-full justify-center px-4 py-10">
+          <div className="w-[70vw] max-w-5xl">
+            <div className="mb-6 border-b border-zinc-700 pb-2">
+              <p className="text-left text-3xl font-semibold tracking-wide">
+                品牌荣誉
+              </p>
+            </div>
+            <Image
+              src="/honor.jpg"
+              alt="荣誉墙"
+              width={1600}
+              height={4000}
+              className="h-auto w-full object-contain"
+              priority
+            />
+          </div>
+        </section>
+      </div>
+    );
   }
 
   return (
