@@ -2,7 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 
 const presetCategories = ["使用指南", "技术支持", "售后服务", "故障排查", "购买咨询", "其他"] as const;
 
@@ -545,27 +553,52 @@ export default function ManageFaqsPage() {
           </div>
         </div>
       )}
-            <ConfirmDialog
+
+      <Dialog
         open={!!deleteTarget}
-        title="删除问答"
-        description={
-          deleteTarget && (
-            <>
-              <p className="mb-2">确定要删除这条问答吗？</p>
-              <p className="text-xs text-zinc-500 line-clamp-2">
+        onOpenChange={(open) => {
+          if (!open && !deleting) {
+            setDeleteTarget(null);
+          }
+        }}
+      >
+        <DialogContent className="bg-card text-muted-foreground">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base text-foreground">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              删除问答
+            </DialogTitle>
+          </DialogHeader>
+          {deleteTarget && (
+            <div className="space-y-2 text-sm">
+              <p>确定要删除这条问答吗？</p>
+              <p className="text-xs text-muted-foreground line-clamp-2">
                 {deleteTarget.question}
               </p>
-            </>
-          )
-        }
-        confirmLabel={deleting ? "正在删除..." : "确认删除"}
-        cancelLabel="取消"
-        loading={deleting}
-        onConfirm={confirmDelete}
-        onCancel={() => {
-          if (!deleting) setDeleteTarget(null);
-        }}
-      />
+            </div>
+          )}
+          <DialogFooter className="mt-4 gap-2">
+            <Button
+              type="button"
+              disabled={deleting}
+              className="bg-white text-black hover:bg-zinc-100"
+              onClick={() => {
+                if (!deleting) setDeleteTarget(null);
+              }}
+            >
+              取消
+            </Button>
+            <Button
+              type="button"
+              disabled={deleting}
+              className="bg-white text-red-600 hover:bg-red-50"
+              onClick={confirmDelete}
+            >
+              {deleting ? "正在删除..." : "确认删除"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

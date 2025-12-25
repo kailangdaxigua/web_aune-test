@@ -10,7 +10,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { AlertTriangle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { AlertTriangle, X, Power, Pencil, Trash2 } from "lucide-react";
 
 type FeaturedItem = {
   id: number;
@@ -314,29 +324,29 @@ export default function ManageFeaturedPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-foreground">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">首页精选推荐</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <h1 className="text-2xl font-bold text-foreground">首页精选推荐</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
             配置首页白色区域的精选图片。
           </p>
         </div>
 
-        <button
+        <Button
           onClick={startCreate}
-          className="rounded-lg bg-white px-4 py-2 text-sm font-medium text-black shadow-lg shadow-white/20 transition-colors hover:bg-zinc-200"
+          className="px-4 py-2 text-sm font-medium bg-white text-black shadow-lg shadow-primary/20 transition-colors hover:bg-gradient-to-r hover:from-white hover:to-zinc-200"
         >
           新建推荐
-        </button>
+        </Button>
       </div>
 
       {/* Form modal */}
       {showFormModal && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/70 p-4 pt-20">
-          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0b0b12] shadow-2xl">
-            <div className="flex items-center justify-between border-b border-zinc-800 px-6 py-4">
-              <h2 className="text-lg font-semibold text-white">
+          <div className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
+            <div className="flex items-center justify-between border-b border-border px-6 py-4">
+              <h2 className="text-lg font-semibold text-foreground">
                 {editingId == null ? "新建推荐" : "编辑推荐"}
               </h2>
               <button
@@ -347,11 +357,10 @@ export default function ManageFeaturedPage() {
                   setForm(EMPTY_FORM);
                   setError(null);
                 }}
-                className="rounded-lg p-2 text-zinc-400 transition-colors hover:bg-zinc-800"
+                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted/20"
+                aria-label="关闭"
               >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <X className="h-5 w-5" />
               </button>
             </div>
 
@@ -361,24 +370,24 @@ export default function ManageFeaturedPage() {
             >
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-zinc-200">
+                  <label className="block text-sm font-medium text-foreground">
                     标题（可选）
                   </label>
-                  <input
+                  <Input
                     value={form.title ?? ""}
                     onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
+                    className="w-full border-border bg-background text-sm text-foreground focus-visible:ring-primary/40"
                   />
                 </div>
 
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-zinc-200">
+                  <label className="block text-sm font-medium text-foreground">
                     副标题（可选）
                   </label>
-                  <input
+                  <Input
                     value={form.subtitle ?? ""}
                     onChange={(e) => setForm((f) => ({ ...f, subtitle: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
+                    className="w-full border-border bg-background text-sm text-foreground focus-visible:ring-primary/40"
                   />
                 </div>
               </div>
@@ -386,37 +395,37 @@ export default function ManageFeaturedPage() {
               {/* Time range */}
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-zinc-200">
+                  <label className="block text-sm font-medium text-foreground">
                     开始时间（可选）
                   </label>
-                  <input
+                  <Input
                     type="datetime-local"
                     value={form.start_at}
                     onChange={(e) => setForm((f) => ({ ...f, start_at: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
+                    className="w-full border-border bg-background text-sm text-foreground focus-visible:ring-primary/40"
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-zinc-200">
+                  <label className="block text-sm font-medium text-foreground">
                     结束时间（可选）
                   </label>
-                  <input
+                  <Input
                     type="datetime-local"
                     value={form.end_at}
                     onChange={(e) => setForm((f) => ({ ...f, end_at: e.target.value }))}
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
+                    className="w-full border-border bg-background text-sm text-foreground focus-visible:ring-primary/40"
                   />
                 </div>
               </div>
 
               {/* Desktop image uploader + preview */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-zinc-200">
+                <label className="block text-sm font-medium text-foreground">
                   推荐位图片
                 </label>
                 <div className="grid gap-3 md:grid-cols-2 items-center">
                   <div className="flex flex-wrap items-center gap-2">
-                    <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-zinc-600 bg-black/40 px-3 py-1.5 text-xs text-zinc-100 hover:border-zinc-300 hover:text-white">
+                    <label className="inline-flex cursor-pointer items-center justify-center rounded-lg border border-border bg-background px-3 py-1.5 text-xs text-foreground hover:border-primary hover:text-primary">
                       <input
                         type="file"
                         accept="image/*"
@@ -427,7 +436,7 @@ export default function ManageFeaturedPage() {
                     </label>
                   </div>
                   <div className="mt-2 w-full md:mt-0 md:w-full md:max-w-xs">
-                    <div className="flex h-28 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 sm:h-32">
+                    <div className="flex h-28 items-center justify-center overflow-hidden rounded-xl border border-border bg-muted sm:h-32">
                       {form.image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -436,7 +445,7 @@ export default function ManageFeaturedPage() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <span className="text-xs text-zinc-500">暂无图片</span>
+                        <span className="text-xs text-muted-foreground">暂无图片</span>
                       )}
                     </div>
                   </div>
@@ -445,7 +454,7 @@ export default function ManageFeaturedPage() {
 
               {/* Mobile image uploader + preview */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-zinc-200">
+                <label className="block text-sm font-medium text-foreground">
                   移动端图片
                 </label>
                 <div className="grid gap-3 md:grid-cols-2 items-center">
@@ -461,7 +470,7 @@ export default function ManageFeaturedPage() {
                     </label>
                   </div>
                   <div className="mt-2 w-full md:mt-0 md:w-full md:max-w-[180px]">
-                    <div className="flex h-24 items-center justify-center overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 sm:h-28">
+                    <div className="flex h-24 items-center justify-center overflow-hidden rounded-xl border border-border bg-muted sm:h-28">
                       {form.mobile_image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -486,90 +495,88 @@ export default function ManageFeaturedPage() {
 
               <div className="grid gap-4 md:grid-cols-[minmax(0,2fr)_minmax(0,0.9fr)_minmax(0,1.6fr)]">
                 <div className="space-y-2">
-                  <label className="block text-sm font-medium text-zinc-200">
+                  <label className="block text-sm font-medium text-foreground">
                     链接地址（必填）
                   </label>
-                  <input
+                  <Input
                     value={form.link_url ?? ""}
                     onChange={(e) => setForm((f) => ({ ...f, link_url: e.target.value }))}
                     placeholder="/product/x8 或 https://..."
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
+                    className="w-full border-border bg-background text-sm text-foreground focus-visible:ring-primary/40"
                   />
                 </div>
 
                 <div className="space-y-2 md:max-w-[120px]">
-                  <label className="block text-sm font-medium text-zinc-200">
+                  <label className="block text-sm font-medium text-foreground">
                     排序
                   </label>
-                  <input
+                  <Input
                     type="number"
                     value={form.sort_order}
                     onChange={(e) =>
                       setForm((f) => ({ ...f, sort_order: Number(e.target.value) || 0 }))
                     }
-                    className="w-full rounded-lg border border-zinc-700 bg-[#0b0b12] px-3 py-2 text-sm text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
+                    className="w-full border-border bg-background text-sm text-foreground focus-visible:ring-primary/40"
                   />
                 </div>
 
                 <div className="space-y-1 md:pl-2">
-                  <label className="block text-sm font-medium text-zinc-200">
+                  <label className="block text-sm font-medium text-foreground">
                     链接选项
                   </label>
-                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-zinc-300">
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-xs text-muted-foreground">
                     <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
+                      <Checkbox
                         checked={form.is_external}
-                        onChange={(e) =>
+                        onCheckedChange={(checked) =>
                           setForm((f) => ({
                             ...f,
-                            is_external: e.target.checked,
-                            link_target: e.target.checked ? "_blank" : f.link_target,
+                            is_external: Boolean(checked),
+                            link_target: checked ? "_blank" : f.link_target,
                           }))
                         }
-                        className="h-4 w-4 rounded border-zinc-600 bg-[#0b0b12] text-white"
+                        className="h-4 w-4 border-border"
                       />
                       <span className="whitespace-nowrap">外部链接（新窗口打开）</span>
                     </label>
-                    <select
+                    <Select
                       value={form.link_target ?? "_self"}
-                      onChange={(e) =>
-                        setForm((f) => ({
-                          ...f,
-                          link_target: e.target.value as "_self" | "_blank",
-                        }))
+                      onValueChange={(value: "_self" | "_blank") =>
+                        setForm((f) => ({ ...f, link_target: value }))
                       }
-                      className="mt-1 h-8 rounded-lg border border-zinc-700 bg-zinc-900 px-3 text-xs text-white outline-none focus:border-zinc-300 focus:ring-2 focus:ring-zinc-400/40"
                     >
-                      <option value="_self">当前窗口</option>
-                      <option value="_blank">新窗口</option>
-                    </select>
+                      <SelectTrigger className="mt-1 h-8 w-[120px] border-border bg-background px-3 text-xs text-foreground">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="_self">当前窗口</SelectItem>
+                        <SelectItem value="_blank">新窗口</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
-                <label className="flex items-center gap-2 text-sm text-zinc-200">
-                  <input
-                    type="checkbox"
+                <div className="flex items-center gap-2 text-sm text-foreground">
+                  <Switch
                     checked={!!form.is_active}
-                    onChange={(e) =>
-                      setForm((f) => ({ ...f, is_active: e.target.checked }))
+                    onCheckedChange={(checked) =>
+                      setForm((f) => ({ ...f, is_active: Boolean(checked) }))
                     }
-                    className="h-4 w-4 rounded border-zinc-600 bg-[#0b0b12] text-white"
                   />
-                  启用（显示在首页）
-                </label>
+                  <span>启用（显示在首页）</span>
+                </div>
                 {error && (
-                  <div className="max-w-xs text-xs text-red-400">{error}</div>
+                  <div className="max-w-xs text-xs text-destructive">{error}</div>
                 )}
-                <button
+                <Button
                   type="submit"
                   disabled={saving}
-                  className="rounded-lg bg-white px-5 py-2 text-sm font-medium text-black shadow-md shadow-white/10 transition-colors hover:bg-zinc-200 disabled:opacity-60"
+                  className="px-5 py-2 text-sm font-medium shadow-md shadow-primary/10 disabled:opacity-60"
                 >
                   {saving ? "保存中..." : editingId == null ? "创建" : "保存修改"}
-                </button>
+                </Button>
               </div>
             </form>
           </div>
@@ -578,11 +585,11 @@ export default function ManageFeaturedPage() {
 
       {/* List as cards */}
       {loading ? (
-        <div className="rounded-2xl border border-zinc-800 bg-[#11111a] p-10 text-center text-sm text-zinc-400">
+        <div className="rounded-2xl border border-border bg-card p-10 text-center text-sm text-muted-foreground">
           加载中...
         </div>
       ) : items.length === 0 ? (
-        <div className="rounded-2xl border border-zinc-800 bg-[#11111a] p-10 text-center text-sm text-zinc-400">
+        <div className="rounded-2xl border border-border bg-card p-10 text-center text-sm text-muted-foreground">
           暂无推荐，先在上方表单创建一条。
         </div>
       ) : (
@@ -590,11 +597,11 @@ export default function ManageFeaturedPage() {
           {items.map((item, index) => (
             <div
               key={item.id}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-[#11111a] shadow-sm transition-colors hover:border-zinc-600"
+              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-colors hover:border-primary/60"
             >
               {/* 图片预览 + 悬浮操作 */}
               <div className="relative">
-                <div className="h-40 w-full overflow-hidden bg-zinc-900">
+                <div className="h-40 w-full overflow-hidden bg-muted">
                   {item.image_url ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -603,7 +610,7 @@ export default function ManageFeaturedPage() {
                       className="h-full w-full object-cover"
                     />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-xs text-zinc-500">
+                    <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
                       无图片
                     </div>
                   )}
@@ -613,48 +620,31 @@ export default function ManageFeaturedPage() {
                 <div className="pointer-events-none absolute inset-x-4 top-4 flex items-center justify-between">
                   <span
                     className={`inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-medium ${item.is_active
-                        ? "bg-emerald-500/15 text-emerald-300"
-                        : "bg-zinc-700/60 text-zinc-300"
+                      ? "bg-emerald-500/15 text-emerald-300"
+                      : "bg-muted text-muted-foreground"
                       }`}
                   >
                     {item.is_active ? "已启用" : "未启用"}
                   </span>
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-black/70 text-xs font-medium text-white">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-background/80 text-xs font-medium text-foreground">
                     {index + 1}
                   </span>
                 </div>
 
                 {/* 悬浮操作层 */}
-                <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:bg-black/55 group-hover:opacity-100">
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-background/0 opacity-0 transition-all duration-200 group-hover:pointer-events-auto group-hover:bg-background/70 group-hover:opacity-100">
                   <div className="flex items-center gap-4 text-xs">
                     {/* 启用 / 停用 */}
                     <button
                       type="button"
                       onClick={() => toggleActive(item)}
                       title={item.is_active ? "停用此推荐" : "启用此推荐"}
-                      className="inline-flex min-w-[96px] items-center justify-center gap-2.5 rounded-full bg-zinc-900/90 px-4 py-2 text-[11px] font-medium text-zinc-100 hover:bg-zinc-800"
+                      className="inline-flex min-w-[96px] items-center justify-center gap-2.5 rounded-full bg-background/90 px-4 py-2 text-[11px] font-medium text-foreground hover:bg-background"
                     >
-                      <svg
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <circle
-                          cx="10"
-                          cy="10"
-                          r="7"
-                          className={item.is_active ? "fill-emerald-400" : "fill-zinc-500"}
-                        />
-                        <path
-                          d="M8 10.5L9.5 12L12.5 8.5"
-                          stroke="black"
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className={item.is_active ? "opacity-100" : "opacity-70"}
-                        />
-                      </svg>
+                      <Power
+                        className={`h-6 w-6 ${item.is_active ? "text-muted-foreground" : "text-emerald-400"
+                          }`}
+                      />
                       <span>{item.is_active ? "停用" : "启用"}</span>
                     </button>
 
@@ -663,22 +653,9 @@ export default function ManageFeaturedPage() {
                       type="button"
                       onClick={() => startEdit(item)}
                       title="编辑推荐"
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/90 text-zinc-100 hover:bg-zinc-800"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-background/90 text-foreground hover:bg-background"
                     >
-                      <svg
-                        className="h-5 w-5"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M5 13.5L5.6 11.1C5.7 10.7 5.9 10.4 6.1 10.2L11.9 4.4C12.5 3.8 13.4 3.8 14 4.4L15.6 6C16.2 6.6 16.2 7.5 15.6 8.1L9.8 13.9C9.6 14.1 9.3 14.3 8.9 14.4L6.5 15"
-                          stroke="currentColor"
-                          strokeWidth="1.4"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <Pencil className="h-5 w-5" />
                     </button>
 
                     {/* 删除 */}
@@ -686,57 +663,32 @@ export default function ManageFeaturedPage() {
                       type="button"
                       onClick={() => remove(item)}
                       title="删除推荐"
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/90 text-red-400 hover:bg-red-500/20"
+                      className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-background/90 text-destructive hover:bg-destructive/10"
                     >
-                      <svg
-                        className="h-5.5 w-5.5"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M4.5 6.5H15.5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M8.5 4.5H11.5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M6.5 6.5L7 14C7.1 15 7.7 15.6 8.7 15.6H11.3C12.3 15.6 12.9 15 13 14L13.5 6.5"
-                          stroke="currentColor"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
+                      <Trash2 className="h-5 w-5" />
                     </button>
                   </div>
                 </div>
               </div>
 
               {/* 文案 & 信息 + 底部操作 */}
-              <div className="flex flex-1 flex-col border-t border-zinc-800 bg-[#11111a] px-4 pb-3 pt-3 text-xs text-zinc-200">
+              <div className="flex flex-1 flex-col border-t border-border bg-card px-4 pb-3 pt-3 text-xs text-muted-foreground">
 
-                <p className="truncate text-sm font-semibold text-white" title={item.title || undefined}>
+                <p className="truncate text-sm font-semibold text-foreground" title={item.title || undefined}>
                   {item.title || "(未命名推荐)"}
                 </p>
                 {item.subtitle && (
-                  <p className="mt-1 line-clamp-2 text-xs text-zinc-200/90">{item.subtitle}</p>
+                  <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{item.subtitle}</p>
                 )}
-                <div className="mt-2 mb-2 space-y-1 text-[11px] text-zinc-300">
+                <div className="mt-2 mb-2 space-y-1 text-[11px] text-muted-foreground">
                   {item.target_url && (
                     <div className="flex items-center gap-1">
-                      <span className="text-zinc-200">链接：</span>
+                      <span className="text-foreground">链接：</span>
                       <a
                         href={item.target_url}
                         target={item.link_target || "_self"}
                         rel="noreferrer"
-                        className="truncate text-[11px] text-zinc-50 hover:underline"
+                        className="truncate text-[11px] text-foreground hover:underline"
                         title={item.target_url}
                       >
                         {item.target_url}
@@ -744,7 +696,7 @@ export default function ManageFeaturedPage() {
                     </div>
                   )}
                   <div>
-                    <span className="text-zinc-200">展示时间：</span>
+                    <span className="text-foreground">展示时间：</span>
                     <span>
                       {item.start_at
                         ? item.start_at.slice(0, 16).replace("T", " ")
@@ -756,8 +708,8 @@ export default function ManageFeaturedPage() {
                     </span>
                   </div>
                   <div>
-                    <span className="text-zinc-200">排序：</span>
-                    <span className="text-zinc-50">{item.sort_order}</span>
+                    <span className="text-foreground">排序：</span>
+                    <span className="text-foreground">{item.sort_order}</span>
                   </div>
                 </div>
               </div>
@@ -777,7 +729,7 @@ export default function ManageFeaturedPage() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base">
-              <AlertTriangle className="h-4 w-4 text-destructive" />
+              <AlertTriangle className="h-5 w-5 text-destructive" />
               删除精选推荐
             </DialogTitle>
           </DialogHeader>

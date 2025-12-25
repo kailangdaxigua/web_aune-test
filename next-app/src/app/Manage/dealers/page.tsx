@@ -2,7 +2,15 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 
 const dealerTypes = [
   { value: "offline", label: "线下体验店" },
@@ -800,31 +808,55 @@ export default function ManageDealersPage() {
         </div>
       )}
 
-            <ConfirmDialog
+      <Dialog
         open={!!deleteTarget}
-        title="删除经销商"
-        description={
-          deleteTarget && (
-            <>
-              <p className="mb-2">
+        onOpenChange={(open) => {
+          if (!open && !deleting) {
+            setDeleteTarget(null);
+          }
+        }}
+      >
+        <DialogContent className="bg-card text-muted-foreground">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-base text-foreground">
+              <AlertTriangle className="h-5 w-5 text-destructive" />
+              删除经销商
+            </DialogTitle>
+          </DialogHeader>
+          {deleteTarget && (
+            <div className="space-y-2 text-sm">
+              <p>
                 确定要删除经销商
-                <span className="mx-1 font-medium text-white">{deleteTarget.name}</span>
+                <span className="mx-1 font-medium text-foreground">{deleteTarget.name}</span>
                 吗？
               </p>
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-muted-foreground">
                 此操作不可撤销，将同时删除关联的 LOGO 和封面图片文件。
               </p>
-            </>
-          )
-        }
-        confirmLabel={deleting ? "正在删除..." : "确认删除"}
-        cancelLabel="取消"
-        loading={deleting}
-        onConfirm={confirmDelete}
-        onCancel={() => {
-          if (!deleting) setDeleteTarget(null);
-        }}
-      />
+            </div>
+          )}
+          <DialogFooter className="mt-4 gap-2">
+            <Button
+              type="button"
+              disabled={deleting}
+              className="bg-white text-black hover:bg-zinc-100"
+              onClick={() => {
+                if (!deleting) setDeleteTarget(null);
+              }}
+            >
+              取消
+            </Button>
+            <Button
+              type="button"
+              disabled={deleting}
+              className="bg-white text-red-600 hover:bg-red-50"
+              onClick={confirmDelete}
+            >
+              {deleting ? "正在删除..." : "确认删除"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
