@@ -88,15 +88,46 @@ export default function HeaderClient({ categoryGroups }: HeaderClientProps) {
 
                   // 外链导航项（例如 商城），使用原生 <a> 打开新窗口
                   if (item.external) {
-                    // 商城：仅展示文字，不跳转
+                    // 商城：使用与前四个相同的悬浮下拉结构
                     if (item.label === "商城") {
                       return (
                         <NavigationMenuItem key={item.label}>
-                          <span
-                            className={`${navLinkBase} ${navLinkColor} bg-transparent cursor-default select-none`}
+                          <NavigationMenuTrigger
+                            className={`${navLinkBase} ${
+                              scrolled
+                                ? "text-black hover:text-zinc-600! focus:text-zinc-600!"
+                                : "text-white hover:text-zinc-300! focus:text-zinc-300!"
+                            } bg-transparent hover:bg-transparent focus:bg-transparent data-[state=open]:bg-transparent data-[state=open]:hover:bg-transparent data-[state=open]:focus:bg-transparent [&_svg]:hidden`}
                           >
                             {item.label}
-                          </span>
+                          </NavigationMenuTrigger>
+                          <NavigationMenuContent
+                            className={
+                              scrolled
+                                ? "bg-white text-zinc-900 w-auto px-0 flex justify-center rounded-2xl left-1/2 -translate-x-1/2"
+                                : "bg-zinc-900/95 text-zinc-50 w-auto px-0 flex justify-center rounded-2xl left-1/2 -translate-x-1/2"
+                            }
+                            style={{ marginTop: 10 }}
+                          >
+                            <div className="flex flex-col items-center justify-center gap-0.5 px-1.5 py-0.5 text-center">
+                              <a
+                                href="https://www.jd.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-2.5 py-1 text-[13px] whitespace-nowrap text-center"
+                              >
+                                京东旗舰店
+                              </a>
+                              <a
+                                href="https://www.tmall.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-2.5 py-1 text-[13px] whitespace-nowrap text-center"
+                              >
+                                天猫旗舰店
+                              </a>
+                            </div>
+                          </NavigationMenuContent>
                         </NavigationMenuItem>
                       );
                     }
@@ -131,20 +162,21 @@ export default function HeaderClient({ categoryGroups }: HeaderClientProps) {
                         >
                           {item.label}
                         </NavigationMenuTrigger>
-                        {/* 下拉内容区域（当前为占位示例，可按需扩展） */}
+                        {/* 下拉内容区域：样式与“商城”下拉保持一致，后续可按需扩展内容 */}
                         <NavigationMenuContent
                           className={
                             scrolled
-                              ? "bg-white text-zinc-900 w-auto px-0 flex justify-center"
-                              : "bg-zinc-900/95 text-zinc-50 w-auto px-0 flex justify-center"
+                              ? "bg-white text-zinc-900 w-auto px-0 flex justify-center rounded-2xl left-1/2 -translate-x-1/2"
+                              : "bg-zinc-900/95 text-zinc-50 w-auto px-0 flex justify-center rounded-2xl left-1/2 -translate-x-1/2"
                           }
+                          style={{ marginTop: 10 }}
                         >
-                          <div className="flex flex-row items-center justify-center gap-4 px-2 py-1 text-center">
+                          <div className="flex flex-col items-center justify-center gap-0.5 px-1.5 py-0.5 text-center">
                             <Link
                               href={item.href}
-                              className="px-4 py-2 text-sm whitespace-nowrap"
+                              className="px-2.5 py-1 text-[13px] whitespace-nowrap text-center"
                             >
-                              测试1
+                              test1
                             </Link>
                           </div>
                         </NavigationMenuContent>
